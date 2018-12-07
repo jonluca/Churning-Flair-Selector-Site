@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<% include partial/head.ejs %>
+<script src="/js/main.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+<body>
+<header>
+    <h1>Welcome <%= name %>!</h1>
+    <p>Please select your flair</p>
+</header>
+<div id="container">
+    <span>
+        <input class="balloon" id="filter" type="text" placeholder="Type to filter"/>
+        <label for="filter">Filter</label>
+    </span>
+    <section id="flair-container">
+        <div id="flair-list"></div>
+    </section>
+    <button id="save" disabled>Save</button>
+</div>
+</body>
+</html>
