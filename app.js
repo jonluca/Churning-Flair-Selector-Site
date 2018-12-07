@@ -3,26 +3,11 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const config = require('./config');
 const helmet = require("helmet");
 const indexRouter = require('./routes/index');
-const session = require('express-session');
 
 const app = express();
-
-// Session information, stored in cookie
-let sessionOpts = {
-  secret: 'ChurningReferral',
-  resave: false,
-  saveUninitialized: true,
-  cookie: {}
-};
-
-if (app.get('env') === 'production') {
-  app.set('trust proxy', 1); // trust first proxy
-  sessionOpts.cookie.secure = true; // serve secure cookies
-}
-
-app.use(session(sessionOpts));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -31,7 +16,7 @@ app.set('view engine', 'ejs');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
-app.use(cookieParser());
+app.use(cookieParser(config.web_app_secret));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(helmet());
 
