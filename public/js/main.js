@@ -43,10 +43,10 @@ function registerEventListeners() {
 
   $(document).on('click', '.flair-item', e => {
     let shouldAddClassToTarget = !$(e.target).hasClass('selected');
+    $("#save").prop("disabled", !shouldAddClassToTarget);
     $(".selected").removeClass("selected");
     if (shouldAddClassToTarget) {
       $(e.target).addClass('selected');
-      $("#save").prop("disabled", false);
     }
   });
 
