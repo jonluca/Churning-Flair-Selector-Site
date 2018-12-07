@@ -57,3 +57,5 @@ yarn install
 ```
 
 Fill out the sections in `config.js`, then start the application with `npm start` or `node bin/www`.
+
+The other part you'll need to change is the front end filtering logic in `public/js/main.js`. Currently it assumes a format similar to that in `public/data/flairs.json`, which is for airports, since this application was originally made for /r/churning. You'll want to change the logic around displaying, filtering, and retrieving the various flair options.
