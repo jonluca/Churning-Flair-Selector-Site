@@ -2,9 +2,12 @@
 <html>
 <% include partial/head.ejs %>
 <body>
+<header>
+    <h1>/r/<%= subreddit %> Flair Selector</h1>
+</header>
 <div id="container">
-    <h1>/r/churning Flair Selector</h1>
-    <div><a href="<%= redirect_url %>">Allow Access</a></div>
+    <div id="start-button" onclick="location.href='<%= redirect_url %>'">
+        <a class="button-link" href="<%= redirect_url %>">Allow Access</a></div>
 </div>
 </body>
 </html>

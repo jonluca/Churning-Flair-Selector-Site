@@ -29,7 +29,8 @@ router.get('/:var(about)?', function (req, res, next) {
   res.cookie('state', state, cookieOptions);
   let redirecturl = reddit.oAuthUrl(state, 'identity', 'temporary');
   res.render('index', {
-    redirect_url: redirecturl
+    redirect_url: redirecturl,
+    subreddit: config.subreddit
   });
 });
 
@@ -41,7 +42,9 @@ router.get('/auth', function (req, res, next) {
     res.status(400);
     return res.render('error', {
       message: "Invalid session state! Please try again later.",
-      error: {}
+      error: {},
+      subreddit: config.subreddit
+
     });
   }
   // Generate a new reddit instance so as to not pollute the global helper instance
@@ -58,7 +61,9 @@ router.get('/auth', function (req, res, next) {
         res.status(500);
         return res.render('error', {
           message: "Unknown reddit authentication error occurred! Please try again later.",
-          error: {}
+          error: {},
+          subreddit: config.subreddit
+
         });
       }
 
@@ -104,12 +109,16 @@ router.get('/flair', function (req, res, next) {
         res.status(500);
         return res.render('error', {
           message: "Error requesting reddit account information, please try again later!",
-          error: {}
+          error: {},
+          subreddit: config.subreddit
+
         });
       }
 
       return res.render('flair', {
-        name: user.name
+        name: user.name,
+        subreddit: config.subreddit
+
       });
     }
   );
