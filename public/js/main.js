@@ -8,7 +8,7 @@ function init() {
   registerEventListeners();
   $.ajax({
     method: 'GET',
-    url: 'data/flairs.json',
+    url: 'data/out.json',
     type: 'json',
     success(data, textStatus, jqXHR) {
       if (!data) {
@@ -23,10 +23,16 @@ function init() {
         distance: 100,
         findAllMatches: false,
         maxPatternLength: 32,
-        minMatchCharLength: 1
+        minMatchCharLength: 1,
+        keys: [
+          "iata",
+          "name",
+          "city"
+        ]
       };
       fuse = new Fuse(data, options); // "list" is the item array
-      $("#flair-list").html(generateList(data));
+
+      $("#flair-list").html(generateList(data.map(e => e.iata)));
     }
   });
 }
@@ -57,7 +63,7 @@ function registerEventListeners() {
       return;
     }
     let data = fuse.search(query);
-    let flairs = data.map(e => fuse.list[e]);
+    let flairs = data.map(e => e.iata);
     $("#flair-list").html(generateList(flairs));
   });
 
