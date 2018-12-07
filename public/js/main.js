@@ -42,11 +42,11 @@ function generateList(list) {
 function registerEventListeners() {
 
   $(document).on('click', '.flair-item', e => {
-    $("#save").prop("disabled", false);
     let shouldAddClassToTarget = !$(e.target).hasClass('selected');
     $(".selected").removeClass("selected");
     if (shouldAddClassToTarget) {
       $(e.target).addClass('selected');
+      $("#save").prop("disabled", false);
     }
   });
 
