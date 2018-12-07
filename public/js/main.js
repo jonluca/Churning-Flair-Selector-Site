@@ -40,11 +40,16 @@ function generateList(list) {
 }
 
 function registerEventListeners() {
+
   $(document).on('click', '.flair-item', e => {
     $("#save").prop("disabled", false);
+    let shouldAddClassToTarget = !$(e.target).hasClass('selected');
     $(".selected").removeClass("selected");
-    $(e.target).addClass('selected');
+    if (shouldAddClassToTarget) {
+      $(e.target).addClass('selected');
+    }
   });
+
   $("#filter").on('keyup', _ => {
     $("#save").prop("disabled", true);
     let query = $("#filter").val();
