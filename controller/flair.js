@@ -47,7 +47,12 @@ FlairController.loadFlairs = _ => {
 };
 
 FlairController.isValidFlair = flair => {
-  return FlairController.flairs.indexOf(flair) !== -1;
+  for (const validFlair of FlairController.flairs) {
+    if (validFlair.iata === flair) {
+      return true;
+    }
+  }
+  return false;
 };
 
 FlairController.setUserFlair = (user, flair, cb) => {
