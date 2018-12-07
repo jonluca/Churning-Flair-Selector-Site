@@ -8,7 +8,7 @@ function init() {
   registerEventListeners();
   $.ajax({
     method: 'GET',
-    url: 'data/out.json',
+    url: 'data/flairs.json',
     type: 'json',
     success(data, textStatus, jqXHR) {
       if (!data) {
@@ -32,7 +32,7 @@ function init() {
       };
       fuse = new Fuse(data, options); // "list" is the item array
 
-      $("#flair-list").html(generateList(data.map(e => e.iata)));
+      $("#flair-list").html(generateList(data));
     }
   });
 }
@@ -40,7 +40,7 @@ function init() {
 function generateList(list) {
   let elements = "";
   for (const flair of list) {
-    elements += `<div data-value="${flair}" class="flair-item">${flair}</div>`;
+    elements += `<div data-value="${flair.iata}" class="flair-item">${flair.iata} - ${flair.name}</div>`;
   }
   return elements;
 }
@@ -63,8 +63,7 @@ function registerEventListeners() {
       return;
     }
     let data = fuse.search(query);
-    let flairs = data.map(e => e.iata);
-    $("#flair-list").html(generateList(flairs));
+    $("#flair-list").html(generateList(data));
   });
 
   $("#save").on('click', _ => {
@@ -72,7 +71,7 @@ function registerEventListeners() {
     if (selected.length !== 1) {
       return;
     }
-    let flairSelection = $(selected).text();
+    let flairSelection = $(selected).attr('data-value');
     $.ajax({
       method: 'POST',
       url: '/save',
