@@ -36,7 +36,7 @@ router.get('/:var(about)?', function (req, res, next) {
 /* GET auth callback page. */
 router.get('/auth', function (req, res, next) {
   const state = req.query.state;
-  const cookieState = req.cookies['state'];
+  const cookieState = req.signedCookies['state'];
   if (cookieState !== state) {
     res.status(400);
     return res.render('error', {
@@ -73,7 +73,7 @@ router.get('/auth', function (req, res, next) {
 
 /* GET flair selector page. */
 router.get('/flair', function (req, res, next) {
-  if (!req.cookies['access_token']) {
+  if (!req.signedCookies['access_token']) {
     res.status(301);
     return res.redirect('/');
   }
@@ -83,7 +83,7 @@ router.get('/flair', function (req, res, next) {
     app_id: config.web_app_id,
     app_secret: config.web_app_secret,
     redirect_uri: config.redirect,
-    access_token: req.cookies['access_token']
+    access_token: req.signedCookies['access_token']
   });
 
   redditUserInstance.get(
@@ -134,7 +134,7 @@ router.post('/save', function (req, res, next) {
     app_id: config.web_app_id,
     app_secret: config.web_app_secret,
     redirect_uri: config.redirect,
-    access_token: req.cookies['access_token']
+    access_token: req.signedCookies['access_token']
   });
 
   redditUserInstance.get(
