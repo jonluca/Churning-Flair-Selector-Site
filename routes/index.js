@@ -10,30 +10,34 @@ const reddit = new RedditApi({
   app_secret: config.web_app_secret,
   redirect_uri: config.redirect
 });
+
+const cookieOptions = {
+  maxAge: 1000 * 60 * 15, // would expire after 15 minutes
+  httpOnly: true, // The cookie only accessible by the web server
+  signed: true // Indicates if the cookie should be signed
+};
 FlairController.loadFlairs();
 /* GET home page. */
 router.get('/:var(about)?', function (req, res, next) {
-  req.session.state = randomstring.generate({
+
+  const state = randomstring.generate({
     length: 12,
     charset: 'alphabetic'
   });
-  let redirecturl = reddit.oAuthUrl(req.session.state, 'identity', 'temporary');
+
+  // Set cookie
+  res.cookie('state', state, cookieOptions);
+  let redirecturl = reddit.oAuthUrl(state, 'identity', 'temporary');
   res.render('index', {
     redirect_url: redirecturl
-  });
-});
-
-/* GET home page. */
-router.get('/temp', function (req, res, next) {
-  return res.render('flair', {
-    name: 'jonluca'
   });
 });
 
 /* GET auth callback page. */
 router.get('/auth', function (req, res, next) {
   const state = req.query.state;
-  if (req.session.state !== state) {
+  const cookieState = req.cookies['state'];
+  if (cookieState !== state) {
     res.status(400);
     return res.render('error', {
       message: "Invalid session state! Please try again later.",
@@ -57,9 +61,9 @@ router.get('/auth', function (req, res, next) {
           error: {}
         });
       }
-      // Set access and refresh tokens in user state
-      req.session.access = redditUserInstance.access_token;
-      req.session.refresh = redditUserInstance.refresh_token;
+
+      // Set cookie
+      res.cookie('access_token', redditUserInstance.access_token, cookieOptions);
 
       // Redirect them to actual flair picker
       res.redirect("/flair");
@@ -69,7 +73,7 @@ router.get('/auth', function (req, res, next) {
 
 /* GET flair selector page. */
 router.get('/flair', function (req, res, next) {
-  if (!req.session.access) {
+  if (!req.cookies['access_token']) {
     res.status(301);
     return res.redirect('/');
   }
@@ -79,8 +83,7 @@ router.get('/flair', function (req, res, next) {
     app_id: config.web_app_id,
     app_secret: config.web_app_secret,
     redirect_uri: config.redirect,
-    access_token: req.session.access,
-    refresh_token: req.session.refresh
+    access_token: req.cookies['access_token']
   });
 
   redditUserInstance.get(
@@ -131,8 +134,7 @@ router.post('/save', function (req, res, next) {
     app_id: config.web_app_id,
     app_secret: config.web_app_secret,
     redirect_uri: config.redirect,
-    access_token: req.session.access,
-    refresh_token: req.session.refresh
+    access_token: req.cookies['access_token']
   });
 
   redditUserInstance.get(
