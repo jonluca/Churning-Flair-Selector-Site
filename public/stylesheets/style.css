@@ -49,7 +49,7 @@ header h1 {
   text-align: center;
 }
 
-#container span {
+#container > span {
   position: relative;
   display: inline-block;
   margin: 30px 10px;
@@ -231,4 +231,24 @@ header h1 {
 .button-link {
   text-decoration: none;
   color: white;
+}
+
+.clear-link {
+  text-decoration: none;
+  text-transform: uppercase;
+  color: rgba(20, 224, 133, 1);;
+  vertical-align: bottom;
+  cursor: pointer;
+}
+
+.selected-flair-item {
+  text-align: center;
+  display: inline-block;
+  vertical-align: top;
+  height: 150px;
+  padding: 15px;
+}
+
+.selected-flairs {
+  display: block;
 }

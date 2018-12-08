@@ -132,10 +132,16 @@ router.post('/save', function (req, res, next) {
   //   return res.redirect('/');
   // }
   const flairSelection = req.body.flair;
-
-  if (!flairSelection || !FlairController.isValidFlair(flairSelection)) {
+  if (!flairSelection) {
     res.status(403);
     return res.end();
+  }
+  let flairs = flairSelection.split(",");
+  for (const flair of flairs) {
+    if (!FlairController.isValidFlair(flair)) {
+      res.status(403);
+      return res.end();
+    }
   }
 
   // Generate a new reddit instance so as to not pollute the global helper instance
@@ -167,7 +173,7 @@ router.post('/save', function (req, res, next) {
           error: {}
         });
       }
-      FlairController.setUserFlair(user.name, flairSelection, success => {
+      FlairController.setUserFlair(user.name, flairs.join(", "), success => {
         if (success) {
           return res.status(200).end();
         }

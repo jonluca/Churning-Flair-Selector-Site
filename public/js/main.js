@@ -13,7 +13,6 @@ function init() {
     success(data, textStatus, jqXHR) {
       if (!data) {
         console.error("Error loading flair json");
-
         return;
       }
       const options = {
@@ -40,7 +39,11 @@ function init() {
 function generateList(list) {
   let elements = "";
   for (const flair of list) {
-    elements += `<div data-value="${flair.iata}" class="flair-item">${flair.iata} - ${flair.name}</div>`;
+    let currentClass = "flair-item";
+    if (flair.iata === $("#first-flair").text() || flair.iata === $("#second-flair").text()) {
+      currentClass += " selected";
+    }
+    elements += `<div data-value="${flair.iata}" class="${currentClass}">${flair.iata} - ${flair.name}</div>`;
   }
   return elements;
 }
@@ -48,36 +51,62 @@ function generateList(list) {
 function registerEventListeners() {
 
   $(document).on('click', '.flair-item', e => {
-    let shouldAddClassToTarget = !$(e.target).hasClass('selected');
-    $("#save").prop("disabled", !shouldAddClassToTarget);
-    $(".selected").removeClass("selected");
-    if (shouldAddClassToTarget) {
-      $(e.target).addClass('selected');
+    // Highlight in red in list
+    $(e.target).addClass('selected');
+    // Set top box values to selection
+    let flair = $(e.target).attr('data-value');
+    if (!$("#first-flair").text()) {
+      $("#first-flair").text(flair);
+      // Don't allow both first and second flair to be the same
+      if ($("#second-flair").text() === flair) {
+        $("#second-flair").text("");
+      }
+    } else {
+      $("#second-flair").text(flair);
+      // Don't allow both first and second flair to be the same
+      if ($("#first-flair").text() === flair) {
+        $("#first-flair").text("");
+      }
     }
+    resetHighlightedFlairsInList();
+    resetSaveDisabledStatus();
+  });
+
+  $(".clear-link").on('click', e => {
+    let flair = $(e.target).prev();
+    $(flair).text("");
+    resetHighlightedFlairsInList();
+    resetSaveDisabledStatus();
   });
 
   $("#filter").on('keyup', _ => {
-    $("#save").prop("disabled", true);
     let query = $("#filter").val();
     if (!fuse || !query.length) {
       return;
     }
     let data = fuse.search(query);
     $("#flair-list").html(generateList(data));
+    resetSaveDisabledStatus();
+    resetHighlightedFlairsInList();
   });
 
   $("#save").on('click', _ => {
-    let selected = $(".selected");
-    if (selected.length !== 1) {
+    let firstFlairSelection = $("#first-flair").text();
+    let secondFlairSelection = $("#second-flair").text();
+    if (!firstFlairSelection && !secondFlairSelection) {
       return;
     }
-    let flairSelection = $(selected).attr('data-value');
+    let flair = firstFlairSelection || secondFlairSelection;
+    if (firstFlairSelection && secondFlairSelection) {
+      flair = firstFlairSelection + "," + secondFlairSelection;
+    }
+
     $.ajax({
       method: 'POST',
       url: '/save',
       type: 'json',
       data: {
-        flair: flairSelection
+        flair: flair
       },
       success(data, textStatus, jqXHR) {
         swal("Success!", "Your flair should be updated in the next 15 minutes!", "success");
@@ -94,4 +123,24 @@ function registerEventListeners() {
       }
     });
   });
+}
+
+function resetSaveDisabledStatus() {
+  if ($("#first-flair").text() || $("#second-flair").text()) {
+    $("#save").prop("disabled", false);
+  } else {
+    $("#save").prop("disabled", true);
+  }
+}
+
+function resetHighlightedFlairsInList() {
+  $(".selected").removeClass("selected");
+  const firstFlair = $('#first-flair').text();
+  const secondFlair = $('#second-flair').text();
+  if (firstFlair) {
+    $(`[data-value='${firstFlair}']`).addClass("selected");
+  }
+  if (secondFlair) {
+    $(`[data-value='${secondFlair}']`).addClass("selected");
+  }
 }
