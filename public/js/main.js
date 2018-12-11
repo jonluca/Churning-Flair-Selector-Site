@@ -95,6 +95,7 @@ function registerEventListeners() {
     let firstFlairSelection = $("#first-flair").text();
     let secondFlairSelection = $("#second-flair").text();
     if (!firstFlairSelection && !secondFlairSelection) {
+      swal("Error!", "Invalid flair selection! You must select at least one flair.", "error");
       return;
     }
     let flair = firstFlairSelection || secondFlairSelection;
