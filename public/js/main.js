@@ -86,6 +86,7 @@ function registerEventListeners() {
     }
     let data = fuse.search(query);
     $("#flair-list").html(generateList(data));
+    $('#flair-container').scrollTop(0);
     resetSaveDisabledStatus();
     resetHighlightedFlairsInList();
   });
