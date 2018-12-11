@@ -1,6 +1,6 @@
 # /r/churning Flair Selector
 
-This is a site that allows users of a subreddit to select flair. This was specifically made for /r/churning but can be easily adapted to any other subreddit.
+This is a site that allows users of a subreddit to select flair. This was specifically made for /r/churning but can be easily adapted to any other subreddit. The announcement for this service was made [here]().
 
 ## Set up
 
@@ -59,3 +59,7 @@ yarn install
 Fill out the sections in `config.js`, then start the application with `npm start` or `node bin/www`.
 
 The other part you'll need to change is the front end filtering logic in `public/js/main.js`. Currently it assumes a format similar to that in `public/data/flairs.json`, which is for airports, since this application was originally made for /r/churning. You'll want to change the logic around displaying, filtering, and retrieving the various flair options.
+
+## Maintenance
+
+This is currently maintained by @jonluca on GitHub and /u/JonLuca on reddit. Feel free to fork this and modify it for your subreddit. This site is provided with the MIT license. 
