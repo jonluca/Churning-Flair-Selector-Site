@@ -10,19 +10,7 @@ const reddit = new RedditApi({
   app_secret: config.mod_script_secret,
   redirect_uri: config.redirect
 });
-// Authenticate with username/password
-reddit.passAuth(
-  config.mod_username,
-  config.mod_password,
-  function (success) {
-    if (success) {
-      console.log("Successfully signed into mod account");
-    } else {
-      console.error("Error signing into mod account for flair assignment! Does config.js have the mod_username and mod_password fields?");
-      process.exit(1);
-    }
-  }
-);
+
 const jsonPath = path.join(__dirname, '..', 'public', 'data', 'flairs.json');
 
 let FlairController = {};
@@ -44,6 +32,22 @@ FlairController.loadFlairs = _ => {
       }
     }
   });
+};
+
+FlairController.refreshToken = _ => {
+  // Authenticate with username/password
+  reddit.passAuth(
+    config.mod_username,
+    config.mod_password,
+    function (success) {
+      if (success) {
+        console.log("Successfully signed into mod account");
+      } else {
+        console.error("Error signing into mod account for flair assignment! Does config.js have the mod_username and mod_password fields?");
+        process.exit(1);
+      }
+    }
+  );
 };
 
 FlairController.isValidFlair = flair => {
@@ -74,4 +78,11 @@ FlairController.setUserFlair = (user, flair, cb) => {
   );
 };
 
+FlairController.refreshToken();
+
+// Refresh the token every
+setInterval(_ => {
+  FlairController.refreshToken();
+  console.log("Refreshed access token");
+}, 1000 * 60 * 15);
 module.exports = FlairController;

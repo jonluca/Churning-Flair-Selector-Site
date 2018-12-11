@@ -186,6 +186,15 @@ RedditApi.prototype = {
 
           });
           return;
+        } else if (api.username && api.password && response &&
+          response.statusCode === 401) {
+          api.passAuth(api.username, api.password, function (success) {
+            if (success) {
+              api.request(path, options, callback);
+            } else {
+              callback.call(api, error, response, data);
+            }
+          });
         } else {
           console.error(
             'reddit-oauth Error:', error,
@@ -211,6 +220,8 @@ RedditApi.prototype = {
 
     this.access_token = null;
     this.refresh_token = null;
+    this.username = username;
+    this.password = password;
 
     this.request('/api/v1/access_token', {
       method: 'POST',
