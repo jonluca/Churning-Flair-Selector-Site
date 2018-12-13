@@ -6,6 +6,8 @@ const logger = require('morgan');
 const config = require('./config');
 const helmet = require("helmet");
 const indexRouter = require('./routes/index');
+const morgan = require('morgan');
+const fs = require('fs');
 
 const app = express();
 app.disable('x-powered-by');
@@ -39,4 +41,11 @@ app.use(function (err, req, res, next) {
   res.render('error');
 });
 
+// Logging
+const accessLogStream = fs.createWriteStream(path.join(__dirname, '../logs/access.log'), {
+  flags: 'a'
+});
+app.use(morgan(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"', {
+  stream: accessLogStream
+}));
 module.exports = app;
