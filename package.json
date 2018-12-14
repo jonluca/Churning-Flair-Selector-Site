@@ -10,12 +10,13 @@
     "debug": "~4.1.0",
     "ejs": "~2.6.1",
     "express": "~4.16.4",
+    "express-minify": "^1.0.0",
     "helmet": "^3.15.0",
     "http-errors": "~1.7.1",
     "morgan": "~1.9.1",
     "randomstring": "^1.1.5",
     "reddit-oauth": "^1.1.1",
-    "throttled-request": "latest",
-    "request": "latest"
+    "request": "latest",
+    "throttled-request": "latest"
   }
 }
