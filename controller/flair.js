@@ -52,7 +52,7 @@ FlairController.refreshToken = _ => {
 
 FlairController.isValidFlair = flair => {
   for (const validFlair of FlairController.flairs) {
-    if (validFlair.iata === flair) {
+    if (validFlair.flair === flair) {
       return true;
     }
   }
