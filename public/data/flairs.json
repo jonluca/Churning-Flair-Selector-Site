@@ -2185,11 +2185,6 @@
     "keyword": "Samana El Catey International Airport"
   },
   {
-    "about": "Ambriz",
-    "flair": "AZZ",
-    "keyword": "Ambriz Airport"
-  },
-  {
     "about": "Marysville",
     "flair": "BAB",
     "keyword": "Beale Air Force Base"
@@ -6435,11 +6430,6 @@
     "keyword": "Federal de Bachigualato International Airport"
   },
   {
-    "about": "",
-    "flair": "CUM",
-    "keyword": "Cumana (Antonio Jose de Sucre) Airport"
-  },
-  {
     "about": "Cancun",
     "flair": "CUN",
     "keyword": "Cancun International Airport"
@@ -7163,11 +7153,6 @@
     "about": "Dijon/Longvic",
     "flair": "DIJ",
     "keyword": "Dijon-Bourgogne Airport"
-  },
-  {
-    "about": "Dickinson",
-    "flair": "DIK",
-    "keyword": "Dickinson Theodore Roosevelt Regional Airport"
   },
   {
     "about": "Dili",
@@ -9405,16 +9390,6 @@
     "keyword": "Fuerteventura Airport"
   },
   {
-    "about": "Fuyang",
-    "flair": "FUG",
-    "keyword": "Fuyang Xiguan Airport"
-  },
-  {
-    "about": "Goto",
-    "flair": "FUJ",
-    "keyword": "Fukue Airport"
-  },
-  {
     "about": "Fullerton",
     "flair": "FUL",
     "keyword": "Fullerton Municipal Airport"
@@ -9493,11 +9468,6 @@
     "about": "Gage",
     "flair": "GAG",
     "keyword": "Gage Airport"
-  },
-  {
-    "about": "",
-    "flair": "GAH",
-    "keyword": "Gayndah Airport"
   },
   {
     "about": "Yamagata",
@@ -21040,11 +21010,6 @@
     "keyword": "Pardubice Airport"
   },
   {
-    "about": "Perm",
-    "flair": "PEE",
-    "keyword": "Bolshoye Savino Airport"
-  },
-  {
     "about": "Peenemunde",
     "flair": "PEF",
     "keyword": "Peenemunde Airport"
@@ -21545,11 +21510,6 @@
     "keyword": "Mutiara Airport"
   },
   {
-    "about": "Port Elizabeth",
-    "flair": "PLZ",
-    "keyword": "Port Elizabeth Airport"
-  },
-  {
     "about": "Chake",
     "flair": "PMA",
     "keyword": "Pemba Airport"
@@ -21743,11 +21703,6 @@
     "about": "Poptun",
     "flair": "PON",
     "keyword": "Poptun Airport"
-  },
-  {
-    "about": "Pocos De Caldas",
-    "flair": "POO",
-    "keyword": "Pocos de Caldas Airport"
   },
   {
     "about": "Puerto Plata",
@@ -23285,11 +23240,6 @@
     "keyword": "Raiatea Airport"
   },
   {
-    "about": "Rio Frio / Progreso",
-    "flair": "RFR",
-    "keyword": "Rio Frio / Progreso Airport"
-  },
-  {
     "about": "La Rosita",
     "flair": "RFS",
     "keyword": "Rosita Airport"
@@ -24663,11 +24613,6 @@
     "about": "Shashi",
     "flair": "SHS",
     "keyword": "Shashi Airport"
-  },
-  {
-    "about": "",
-    "flair": "SHT",
-    "keyword": "Shepparton Airport"
   },
   {
     "about": "",
