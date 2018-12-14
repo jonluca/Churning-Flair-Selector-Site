@@ -24,9 +24,9 @@ function init() {
         maxPatternLength: 32,
         minMatchCharLength: 1,
         keys: [
-          "iata",
-          "name",
-          "city"
+          "about",
+          "flair",
+          "keyword"
         ]
       };
       fuse = new Fuse(data, options); // "list" is the item array
@@ -40,10 +40,10 @@ function generateList(list) {
   let elements = "";
   for (const flair of list) {
     let currentClass = "flair-item";
-    if (flair.iata === $("#first-flair").text() || flair.iata === $("#second-flair").text()) {
+    if (flair.flair === $("#first-flair").text() || flair.flair === $("#second-flair").text()) {
       currentClass += " selected";
     }
-    elements += `<div data-value="${flair.iata}" class="${currentClass}">${flair.iata} - ${flair.name}</div>`;
+    elements += `<div data-value="${flair.flair}" class="${currentClass}">${flair.flair} - ${flair.keyword}</div>`;
   }
   return elements;
 }
