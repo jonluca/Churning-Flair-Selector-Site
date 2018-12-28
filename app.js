@@ -28,7 +28,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser(config.web_app_secret));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(helmet());
+app.use(helmet({xssFilter: false}));
 // Logging
 const accessLogStream = fs.createWriteStream(path.join(__dirname, '/logs/access.log'), {
   flags: 'a'

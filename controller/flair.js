@@ -80,9 +80,9 @@ FlairController.setUserFlair = (user, flair, cb) => {
 
 FlairController.refreshToken();
 
-// Refresh the token every
+// Refresh the token every 30 minutes
 setInterval(_ => {
   FlairController.refreshToken();
   console.log("Refreshed access token");
-}, 1000 * 60 * 15);
+}, 1000 * 60 * 30);
 module.exports = FlairController;
