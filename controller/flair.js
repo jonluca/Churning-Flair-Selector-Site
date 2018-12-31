@@ -73,6 +73,7 @@ FlairController.setUserFlair = (user, flair, cb) => {
         console.error(error);
         return cb(false);
       }
+      console.info(`Set flair for ${user} to ${flair}`);
       return cb(true);
     }
   );

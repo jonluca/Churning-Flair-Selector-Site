@@ -44,7 +44,6 @@ router.get('/auth', function (req, res, next) {
       message: "Invalid session state! Please try again later.",
       error: {},
       subreddit: config.subreddit
-
     });
   }
   // Generate a new reddit instance so as to not pollute the global helper instance
