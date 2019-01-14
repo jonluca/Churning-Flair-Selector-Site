@@ -22,6 +22,15 @@ Database.init = (dbPath = path.join(__dirname, '../db.sqlite')) => {
           last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
           time INT
   )`);
+
+  db.run(`CREATE TABLE IF NOT EXISTS created_posts (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          reddit_id TEXT, 
+          title TEXT,
+          created TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+          scheduled_post_id INTEGER NOT NULL,
+          FOREIGN KEY(scheduled_post_id) REFERENCES scheduled_posts(id)
+  )`);
 };
 
 Database.close = _ => {
@@ -36,6 +45,18 @@ Database.createNewScheduledPost = (post, cb) => {
       return cb(false);
     }
     log.info(`New automated post was added with title ${post.title}`);
+    return cb(true);
+  });
+};
+
+Database.insertCreatedPost = (redditId, title, scheduledId, cb) => {
+  let params = [redditId, title, scheduledId];
+  db.run('INSERT INTO created_posts(reddit_id, title, scheduled_post_id) VALUES(?, ?, ?)', params, (err) => {
+    if (err) {
+      log.error(err.message);
+      return cb(false);
+    }
+    log.info(`Inserted created post with reddit id ${redditId}`);
     return cb(true);
   });
 };
@@ -65,6 +86,16 @@ Database.deleteScheduledPostById = (id, cb) => {
 
 Database.getAllScheduledPosts = (cb) => {
   db.all(`SELECT * FROM scheduled_posts;`, [], (err, posts) => {
+    if (err) {
+      log.error(err);
+      return cb(false);
+    }
+    return cb(posts);
+  });
+};
+
+Database.getCreatedPostsByScheduledId = (id, cb) => {
+  db.all(`SELECT * FROM created_posts WHERE scheduled_post_id=?;`, [id], (err, posts) => {
     if (err) {
       log.error(err);
       return cb(false);

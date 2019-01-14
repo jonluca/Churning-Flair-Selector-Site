@@ -59,6 +59,8 @@ Scheduler.refresh = _ => {
           let d = new Date();
           let dateString = `${d.getMonthName()} ${d.getDate()}, ${d.getFullYear()}`;
           let fullTitle = post.title.replace("<DATE>", dateString);
+          PostController.createNewPost(fullTitle, post.body, post.id, true);
+          PostController.archiveOldById(post.id);
         });
         Scheduler.rules.push(job);
       } catch (e) {

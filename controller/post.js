@@ -1,6 +1,7 @@
 const path = require('path');
 const config = require("../config");
 const RedditApi = require("./reddit");
+const db = require("./db");
 const log = require('simple-node-logger').createSimpleLogger(path.join(__dirname, '../logs/activity.log'));
 
 const reddit = new RedditApi({
@@ -11,7 +12,7 @@ const reddit = new RedditApi({
 
 let PostController = {};
 
-PostController.createNewPost = (title, body, shouldSticky = true) => {
+PostController.createNewPost = (title, body, id, shouldSticky = true) => {
 
 };
 
@@ -19,6 +20,9 @@ PostController.removePost = (post, cb) => {
 
 };
 
+PostController.archiveOldById = id => {
+
+};
 PostController.refreshToken = _ => {
   // Authenticate with username/password
   reddit.passAuth(
