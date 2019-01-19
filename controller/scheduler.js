@@ -34,7 +34,7 @@ Scheduler.refresh = _ => {
     rule.cancel();
   }
   Database.getAllScheduledPosts(posts => {
-    if (!posts) {
+    if (!posts && !Array.isArray(posts)) {
       log.error("Error loading posts!");
       return;
     }
@@ -54,8 +54,8 @@ Scheduler.refresh = _ => {
           let d = new Date();
           let dateString = `${d.getMonthName()} ${d.getDate()}, ${d.getFullYear()}`;
           let fullTitle = post.title.replace("<DATE>", dateString);
-          PostController.createNewPost(fullTitle, post.body, post.id, true);
           PostController.archiveOldById(post.id);
+          PostController.createNewPost(fullTitle, post.body, post.id, true);
         });
         Scheduler.rules.push(job);
       } catch (e) {

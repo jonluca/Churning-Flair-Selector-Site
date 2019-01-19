@@ -35,7 +35,7 @@ PostController.createNewPost = (title, body, id, shouldSticky = true, cb) => {
       const resp = JSON.parse(body);
       const data = resp.json.data;
 
-      db.insertCreatedPost(data.name, title, id, resp => {
+      db.insertCreatedPost(data.name, title, data.url, id, resp => {
         if (resp) {
           log.info(`Successfully saved post with id: ${data.id} in db`);
           return;
@@ -70,7 +70,7 @@ PostController.removePost = (redditId, cb) => {
 };
 
 PostController.archiveOldById = id => {
-  db.getCreatedPostsByScheduledId(id, posts => {
+  db.getCreatedPostsByScheduledId(id, 10, posts => {
     for (const post of posts) {
       PostController.removePost(post.reddit_id, didSucceed => {
         if (!didSucceed) {
