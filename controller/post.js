@@ -5,6 +5,8 @@ const db = require("./db");
 const log = require('simple-node-logger').createSimpleLogger(path.join(__dirname, '../logs/activity.log'));
 
 const postPath = '/api/submit';
+const removePath = '/api/remove';
+
 const reddit = new RedditApi({
   app_id: config.mod_script_id,
   app_secret: config.mod_script_secret,
@@ -26,7 +28,6 @@ PostController.createNewPost = (title, body, id, shouldSticky = true, cb) => {
       sr: config.subreddit
     },
     function (error, response, body) {
-      console.log(body);
       if (error) {
         log.error(error);
         return cb(false);
@@ -34,7 +35,7 @@ PostController.createNewPost = (title, body, id, shouldSticky = true, cb) => {
       const resp = JSON.parse(body);
       const data = resp.json.data;
 
-      db.insertCreatedPost(data.id, title, id, resp => {
+      db.insertCreatedPost(data.name, title, id, resp => {
         if (resp) {
           log.info(`Successfully saved post with id: ${data.id} in db`);
           return;
@@ -48,12 +49,36 @@ PostController.createNewPost = (title, body, id, shouldSticky = true, cb) => {
   );
 };
 
-PostController.removePost = (post, cb) => {
+PostController.removePost = (redditId, cb) => {
+  reddit.post(
+    removePath,
+    {
+      id: redditId,
+      spam: false
+    },
+    function (error, response, body) {
+      if (error) {
+        log.error(error);
+        return cb(false);
+      }
+      const resp = JSON.parse(body);
 
+      console.log(resp);
+      return cb(true);
+    }
+  );
 };
 
 PostController.archiveOldById = id => {
-
+  db.getCreatedPostsByScheduledId(id, posts => {
+    for (const post of posts) {
+      PostController.removePost(post.reddit_id, didSucceed => {
+        if (!didSucceed) {
+          log.error(`Error removing post ${post.title} with id ${post.reddit_id}`);
+        }
+      });
+    }
+  });
 };
 PostController.refreshToken = (cb = _ => {
 }) => {
@@ -74,8 +99,10 @@ PostController.refreshToken = (cb = _ => {
 };
 
 PostController.refreshToken(_ => {
-  PostController.createNewPost("bot test", "# testing markdown\nand new lines", 0, true, _ => {
+  PostController.archiveOldById(8, _ => {
   });
+  // PostController.createNewPost("asdf", 'asdf', 8, true, _ => {
+  // });
 });
 
 // Refresh the token every 30 minutes
