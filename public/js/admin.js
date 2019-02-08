@@ -157,6 +157,8 @@ function createNewPost(title, body, frequency, time) {
       }
       swal("Success!", "New scheduled post successfully created!", "success");
       loadPosts();
+      $("#title").val("");
+      $("#body").val("");
     }
   });
 }
