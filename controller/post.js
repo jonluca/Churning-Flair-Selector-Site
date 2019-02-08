@@ -111,8 +111,6 @@ setInterval(_ => {
   log.info("Refreshed access token");
 }, 1000 * 60 * 30);
 PostController.refreshToken(_ => {
-  PostController.createNewPost("test", "d", 1, false, resp => {
-  });
 });
 
 module.exports = PostController;
