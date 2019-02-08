@@ -25,7 +25,7 @@ PostController.createNewPost = (title, body, id, shouldSticky = true, cb) => {
       nsfw: false,
       text: body,
       title: title,
-      sr: "churningtest"
+      sr: "churningtest" // set it to churning test during testing week
       // sr: config.subreddit
     },
     function (error, response, body) {
@@ -104,13 +104,6 @@ PostController.refreshToken = (cb = _ => {
     }
   );
 };
-
-PostController.refreshToken(_ => {
-  PostController.archiveOldById(8, _ => {
-  });
-  // PostController.createNewPost("asdf", 'asdf', 8, true, _ => {
-  // });
-});
 
 // Refresh the token every 30 minutes
 setInterval(_ => {
