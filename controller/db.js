@@ -57,7 +57,7 @@ Database.createNewScheduledPost = (post, cb) => {
 };
 
 Database.insertCreatedPost = (redditId, title, link, scheduledId, cb) => {
-  let params = [redditId, title, scheduledId];
+  let params = [redditId, title, link, scheduledId];
   db.run('INSERT INTO created_posts(reddit_id, title, link, scheduled_post_id) VALUES(?, ?, ?, ?)', params, (err) => {
     if (err) {
       log.error(err.message);
