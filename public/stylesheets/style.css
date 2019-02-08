@@ -43,6 +43,7 @@ header h1 {
 
 #container {
   display: flex;
+  justify-content: center;
   flex-direction: row;
   margin: 0 auto;
   padding-top: 25px;
