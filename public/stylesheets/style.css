@@ -40,11 +40,18 @@ header h1 {
   pointer-events: none;
 }
 
+#admincontainer {
+  display: flex;
+  flex-direction: row;
+  margin: 0 auto;
+  padding-top: 25px;
+  align-items: center;
+  text-align: center;
+}
+
 
 #container {
-  display: flex;
-  justify-content: center;
-  flex-direction: row;
+  display: block;
   margin: 0 auto;
   padding-top: 25px;
   align-items: center;
