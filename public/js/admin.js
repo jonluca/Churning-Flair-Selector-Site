@@ -36,7 +36,7 @@ function loadPosts() {
 function loadPostToEdit(post) {
   $("#title").val(post.title);
   $("#title").attr('data-id', post.id);
-  $("#body").text(post.body);
+  $("#body").val(post.body);
   if (post.frequency === "ALL") {
     $("#frequency").val("Daily");
     $("#day-container").hide();
