@@ -27,6 +27,7 @@ Database.init = (dbPath = path.join(__dirname, '../db.sqlite'), cb = _ => {
 
     db.run(`CREATE TABLE IF NOT EXISTS created_posts (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
+          removed INTEGER DEFAULT 0,
           reddit_id TEXT, 
           title TEXT,
           link TEXT,
@@ -102,6 +103,26 @@ Database.getAllScheduledPosts = (cb) => {
 
 Database.getCreatedPostsByScheduledId = (id, limit = 50, cb) => {
   db.all(`SELECT * FROM created_posts WHERE scheduled_post_id=? ORDER BY id DESC LIMIT ?;`, [id, limit], (err, posts) => {
+    if (err) {
+      log.error(err);
+      return cb(false);
+    }
+    return cb(posts);
+  });
+};
+
+Database.getCreatedPostsByScheduledIdNotRemoved = (id, limit = 50, cb) => {
+  db.all(`SELECT * FROM created_posts WHERE scheduled_post_id=? AND removed=0 ORDER BY id DESC LIMIT ?;`, [id, limit], (err, posts) => {
+    if (err) {
+      log.error(err);
+      return cb(false);
+    }
+    return cb(posts);
+  });
+};
+
+Database.setPostAsRemoved = (id, removed = true, cb) => {
+  db.run('UPDATE created_posts SET removed=? WHERE id=?', [+removed, id], (err) => {
     if (err) {
       log.error(err);
       return cb(false);

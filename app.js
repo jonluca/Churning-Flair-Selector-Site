@@ -11,6 +11,7 @@ const morgan = require('morgan');
 const fs = require('fs');
 const minify = require('express-minify');
 const basicAuth = require('express-basic-auth');
+const serveIndex = require('serve-index');
 
 const app = express();
 app.disable('x-powered-by');
@@ -34,10 +35,16 @@ app.use(morgan(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:htt
   stream: accessLogStream
 }));
 
+app.use('/logs', basicAuth({
+  users: {'churning': config.admin_pass},
+  challenge: true,
+  realm: 'ChurningRealm'
+}), express.static(__dirname + '/logs/'), serveIndex(__dirname + '/logs/'));
+
 app.use('/admin', basicAuth({
   users: {'churning': config.admin_pass},
   challenge: true,
-  realm: 'Imb4T3st4pp'
+  realm: 'ChurningRealm'
 }), adminRouter);
 
 app.use('/', minify({

@@ -3,6 +3,7 @@ const router = express.Router();
 const db = require('../controller/db');
 const Scheduler = require('../controller/scheduler');
 const path = require('path');
+
 const log = require('simple-node-logger').createSimpleLogger(path.join(__dirname, '../logs/activity.log'));
 /* GET auth callback page. */
 router.get('/', function (req, res, next) {
@@ -17,6 +18,7 @@ router.get('/posts', function (req, res, next) {
     return res.send(posts);
   });
 });
+
 
 router.post('/posts/new', function (req, res, next) {
   let post = {};

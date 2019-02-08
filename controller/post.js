@@ -25,7 +25,8 @@ PostController.createNewPost = (title, body, id, shouldSticky = true, cb) => {
       nsfw: false,
       text: body,
       title: title,
-      sr: config.subreddit
+      sr: "churningtest"
+      // sr: config.subreddit
     },
     function (error, response, body) {
       if (error) {
@@ -70,12 +71,18 @@ PostController.removePost = (redditId, cb) => {
 };
 
 PostController.archiveOldById = id => {
-  db.getCreatedPostsByScheduledId(id, 10, posts => {
+  db.getCreatedPostsByScheduledIdNotRemoved(id, 10, posts => {
     for (const post of posts) {
       PostController.removePost(post.reddit_id, didSucceed => {
         if (!didSucceed) {
           log.error(`Error removing post ${post.title} with id ${post.reddit_id}`);
+          return;
         }
+        db.setPostAsRemoved(post.id, true, removed => {
+          if (!removed) {
+            log.error(`Error removing post ${post.title} with id ${post.reddit_id} from database`);
+          }
+        });
       });
     }
   });
