@@ -34,6 +34,7 @@ Note that the user must A) be a mod of the subreddit and B) must have the `flair
 | mod_password | Password of mod account |
 | mod_script_id | Personal script id |
 | mod_script_secret | Personal script secret |
+| admin_pass | HTTP Auth password for the admin page |
 | subreddit | Subreddit that the user is a mod of |
 
 ## Development
@@ -51,6 +52,7 @@ echo 'module.exports = {
         mod_password: "",
         mod_script_id: "",
         mod_script_secret: "",
+        admin_pass: "",
         subreddit: ""
       };' > config.js
 yarn install

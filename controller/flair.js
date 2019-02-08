@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const config = require("../config");
 const RedditApi = require("./reddit");
+const log = require('simple-node-logger').createSimpleLogger(path.join(__dirname, '../logs/activity.log'));
 
 const flairPath = `/r/${config.subreddit}/api/flair`;
 
@@ -19,15 +20,15 @@ FlairController.flairs = [];
 FlairController.loadFlairs = _ => {
   fs.readFile(jsonPath, 'utf8', (err, fileContent) => {
     if (err) {
-      console.error("Error reading flairs JSON from disk! Does public/data/flairs.json exist?");
-      console.error(err);
+      log.error("Error reading flairs JSON from disk! Does public/data/flairs.json exist?");
+      log.error(err);
       process.exit(1);
     } else {
       try {
         FlairController.flairs = JSON.parse(fileContent.toString());
       } catch (e) {
-        console.error("Error parsing flairs from JSON! Is public/data/flairs.json valid?");
-        console.error(e);
+        log.error("Error parsing flairs from JSON! Is public/data/flairs.json valid?");
+        log.error(e);
         process.exit(1);
       }
     }
@@ -41,9 +42,9 @@ FlairController.refreshToken = _ => {
     config.mod_password,
     function (success) {
       if (success) {
-        console.log("Successfully signed into mod account");
+        log.info("Successfully signed into mod account");
       } else {
-        console.error("Error signing into mod account for flair assignment! Does config.js have the mod_username and mod_password fields?");
+        log.error("Error signing into mod account for flair assignment! Does config.js have the mod_username and mod_password fields?");
         process.exit(1);
       }
     }
@@ -70,10 +71,10 @@ FlairController.setUserFlair = (user, flair, cb) => {
     },
     function (error, response, body) {
       if (error) {
-        console.error(error);
+        log.error(error);
         return cb(false);
       }
-      console.info(`Set flair for ${user} to ${flair}`);
+      log.info(`Set flair for ${user} to ${flair}`);
       return cb(true);
     }
   );
@@ -84,6 +85,6 @@ FlairController.refreshToken();
 // Refresh the token every 30 minutes
 setInterval(_ => {
   FlairController.refreshToken();
-  console.log("Refreshed access token");
+  log.info("Refreshed access token");
 }, 1000 * 60 * 30);
 module.exports = FlairController;

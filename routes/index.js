@@ -4,6 +4,8 @@ const RedditApi = require('../controller/reddit');
 const FlairController = require('../controller/flair');
 const config = require("../config");
 const randomstring = require("randomstring");
+const path = require('path');
+const log = require('simple-node-logger').createSimpleLogger(path.join(__dirname, '../logs/activity.log'));
 
 const reddit = new RedditApi({
   app_id: config.web_app_id,
@@ -103,8 +105,8 @@ router.get('/flair', function (req, res, next) {
         }
       }
       if (error || !user.name) {
-        console.error("Error requesting personal account info!");
-        console.error(error);
+        log.error("Error requesting personal account info!");
+        log.error(error);
         res.status(500);
         return res.render('error', {
           message: "Error requesting reddit account information, please try again later!",
@@ -164,8 +166,8 @@ router.post('/save', function (req, res, next) {
         }
       }
       if (error || !user.name) {
-        console.error("Error requesting personal account info!");
-        console.error(error);
+        log.error("Error requesting personal account info!");
+        log.error(error);
         res.status(500);
         return res.render('error', {
           message: "Error requesting reddit account information, please try again later!",

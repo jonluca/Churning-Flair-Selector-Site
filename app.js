@@ -6,9 +6,12 @@ const logger = require('morgan');
 const config = require('./config');
 const helmet = require("helmet");
 const indexRouter = require('./routes/index');
+const adminRouter = require('./routes/admin');
 const morgan = require('morgan');
 const fs = require('fs');
 const minify = require('express-minify');
+const basicAuth = require('express-basic-auth');
+const serveIndex = require('serve-index');
 
 const app = express();
 app.disable('x-powered-by');
@@ -16,12 +19,6 @@ app.disable('x-powered-by');
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-app.use(minify({
-  cache: __dirname + '/public/cache',
-  uglifyJsModule: null,
-  errorHandler: null,
-  jsMatch: false
-}));
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -33,11 +30,29 @@ app.use(helmet({xssFilter: false}));
 const accessLogStream = fs.createWriteStream(path.join(__dirname, '/logs/access.log'), {
   flags: 'a'
 });
+
 app.use(morgan(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"', {
   stream: accessLogStream
 }));
 
-app.use('/', indexRouter);
+app.use('/logs', basicAuth({
+  users: {'churning': config.admin_pass},
+  challenge: true,
+  realm: 'ChurningRealm'
+}), express.static(__dirname + '/logs/'), serveIndex(__dirname + '/logs/'));
+
+app.use('/admin', basicAuth({
+  users: {'churning': config.admin_pass},
+  challenge: true,
+  realm: 'ChurningRealm'
+}), adminRouter);
+
+app.use('/', minify({
+  cache: __dirname + '/public/cache',
+  uglifyJsModule: null,
+  errorHandler: null,
+  jsMatch: false
+}), indexRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
