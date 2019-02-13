@@ -2,6 +2,7 @@ const path = require('path');
 const log = require('simple-node-logger').createSimpleLogger(path.join(__dirname, '../logs/activity.log'));
 const Database = require('./db');
 const PostController = require('./post');
+const ArchiveController = require('./archive');
 const schedule = require('node-schedule');
 
 Date.prototype.getMonthName = function (lang) {
@@ -30,6 +31,7 @@ let Scheduler = {};
 Scheduler.rules = [];
 
 Scheduler.refresh = _ => {
+  log.log("Rescheduling posts");
   for (const rule of Scheduler.rules) {
     rule.cancel();
   }
@@ -56,6 +58,7 @@ Scheduler.refresh = _ => {
           let fullTitle = post.title.replace("<DATE>", dateString);
           PostController.archiveOldById(post.id);
           PostController.createNewPost(fullTitle, post.body, post.id, true);
+          ArchiveController.createArchiveHtml();
         });
         Scheduler.rules.push(job);
       } catch (e) {
@@ -64,7 +67,5 @@ Scheduler.refresh = _ => {
     }
   });
 };
-
-Scheduler.refresh();
 
 module.exports = Scheduler;

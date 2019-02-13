@@ -15,7 +15,7 @@ const reddit = new RedditApi({
 
 let PostController = {};
 
-PostController.createNewPost = (title, body, id, shouldSticky = true, cb) => {
+PostController.createNewPost = (title, body, id, shouldSticky = true, cb = new Function()) => {
 // Call authenticated POST endpoint
   reddit.post(
     postPath,
@@ -50,7 +50,7 @@ PostController.createNewPost = (title, body, id, shouldSticky = true, cb) => {
   );
 };
 
-PostController.removePost = (redditId, cb) => {
+PostController.removePost = (redditId, cb = new Function()) => {
   reddit.post(
     removePath,
     {
@@ -63,7 +63,6 @@ PostController.removePost = (redditId, cb) => {
         return cb(false);
       }
       const resp = JSON.parse(body);
-
       console.log(resp);
       return cb(true);
     }
@@ -80,8 +79,10 @@ PostController.archiveOldById = id => {
         }
         db.setPostAsRemoved(post.id, true, removed => {
           if (!removed) {
-            log.error(`Error removing post ${post.title} with id ${post.reddit_id} from database`);
+            log.error(`Error removing post ${post.title} with id ${post.reddit_id}`);
+            return;
           }
+          log.info(`Removed post ${post.title} with id ${post.reddit_id}`);
         });
       });
     }

@@ -1,8 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../controller/db');
 const Scheduler = require('../controller/scheduler');
+const db = require('../controller/db');
+const ArchiveController = require('../controller/archive');
 const path = require('path');
+
+db.init(_ => {
+  Scheduler.refresh();
+  ArchiveController.createArchiveHtml();
+});
 
 const log = require('simple-node-logger').createSimpleLogger(path.join(__dirname, '../logs/activity.log'));
 /* GET auth callback page. */
@@ -18,7 +24,6 @@ router.get('/posts', function (req, res, next) {
     return res.send(posts);
   });
 });
-
 
 router.post('/posts/new', function (req, res, next) {
   let post = {};

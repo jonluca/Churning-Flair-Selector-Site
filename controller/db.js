@@ -1,42 +1,95 @@
 const sqlite3 = require('sqlite3');
 const path = require('path');
-// open the database
-let db = null;
+const Sequelize = require('sequelize');
 const log = require('simple-node-logger').createSimpleLogger(path.join(__dirname, '../logs/activity.log'));
+let ScheduledPost,
+  CreatedPost;
+// open the database
+let db = new Sequelize('database', '', '', {
+  host: 'localhost',
+  dialect: 'sqlite',
+  operatorsAliases: false,
+  pool: {
+    max: 5,
+    min: 0,
+    acquire: 30000,
+    idle: 10000
+  },
+  // SQLite only
+  storage: path.join(__dirname, '../db.sqlite')
+});
 
 const Database = {};
 
-Database.init = (dbPath = path.join(__dirname, '../db.sqlite'), cb = _ => {
+Database.init = async (cb = _ => {
 }) => {
-  db = new sqlite3.Database(dbPath, sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) => {
-    if (err) {
-      log.fatal(err.message);
-      return process.exit(1);
-    }
-    log.info('Connected to the database.');
-  });
-  db.serialize(_ => {
-    db.run(`CREATE TABLE IF NOT EXISTS scheduled_posts (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          body TEXT, 
-          title TEXT,
-          frequency TEXT,
-          last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-          time INT
-  )`);
 
-    db.run(`CREATE TABLE IF NOT EXISTS created_posts (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          removed INTEGER DEFAULT 0,
-          reddit_id TEXT, 
-          title TEXT,
-          link TEXT,
-          created TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-          scheduled_post_id INTEGER NOT NULL,
-          FOREIGN KEY(scheduled_post_id) REFERENCES scheduled_posts(id)
-  )`);
-    cb(true);
+  ScheduledPost = await db.define('ScheduledPosts', {
+    id: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true
+    },
+    body: {
+      type: Sequelize.STRING
+    },
+    title: {
+      type: Sequelize.STRING
+    },
+    frequency: {
+      type: Sequelize.STRING
+    },
+    time: {
+      type: Sequelize.INTEGER,
+      allowNull: false
+    }
   });
+  // force: true will drop the table if it already exists
+  await ScheduledPost.sync({force: false});
+
+  CreatedPost = await db.define('CreatedPosts', {
+    id: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true
+    },
+    removed: {
+      type: Sequelize.BOOLEAN,
+      default: false,
+      allowNull: false
+    },
+    reddit_id: {
+      type: Sequelize.STRING
+    },
+    title: {
+      type: Sequelize.STRING
+    },
+    link: {
+      type: Sequelize.STRING
+    },
+    scheduled_post_id: {
+      type: Sequelize.INTEGER,
+      references: {
+        model: 'ScheduledPosts',
+        key: 'id'
+      },
+      allowNull: false
+    }
+  });
+
+  // force: true will drop the table if it already exists
+  await CreatedPost.sync({force: false});
+
+  try {
+    await db.authenticate();
+    log.log('Connection has been established successfully.');
+    cb(true);
+  } catch (e) {
+    log.error('Unable to connect to the database:', e);
+    cb(false);
+  }
 
 };
 
@@ -44,92 +97,128 @@ Database.close = _ => {
   db.close();
 };
 
-Database.createNewScheduledPost = (post, cb) => {
-  let params = [post.body, post.title, post.frequency, post.time, (new Date()).toISOString()];
-  db.run('INSERT INTO scheduled_posts(body, title, frequency, time, last_updated) VALUES(?, ?, ?, ?, ?)', params, (err) => {
-    if (err) {
-      log.error(err.message);
-      return cb(false);
-    }
+Database.createNewScheduledPost = async (post, cb) => {
+  const sp = ScheduledPost.build({
+    body: post.body,
+    title: post.title,
+    frequency: post.frequency,
+    time: post.time
+  });
+
+  try {
+    await sp.save();
     log.info(`New automated post was added with title ${post.title}`);
     return cb(true);
-  });
+  } catch (e) {
+    log.error(e);
+    return cb(false);
+  }
 };
 
-Database.insertCreatedPost = (redditId, title, link, scheduledId, cb) => {
-  let params = [redditId, title, link, scheduledId];
-  db.run('INSERT INTO created_posts(reddit_id, title, link, scheduled_post_id) VALUES(?, ?, ?, ?)', params, (err) => {
-    if (err) {
-      log.error(err.message);
-      return cb(false);
-    }
+Database.insertCreatedPost = async (redditId, title, link, scheduledId, cb) => {
+
+  const cp = CreatedPost.build({
+    reddit_id: redditId,
+    title: title,
+    link: link,
+    removed: false,
+    scheduled_post_id: scheduledId
+  });
+
+  try {
+    await cp.save();
     log.info(`Inserted created post with reddit id ${redditId}`);
     return cb(true);
-  });
+  } catch (e) {
+    log.error(e);
+    return cb(false);
+  }
 };
 
-Database.modifyScheduledPostById = (id, post, cb) => {
-  let values = [post.body, post.title, post.frequency, post.time, (new Date).toISOString(), id];
-  db.run('UPDATE scheduled_posts SET body=?, title=?, frequency=?, time=?, last_updated=? WHERE id=?', values, (err) => {
-    if (err) {
-      log.error(err.message);
-      return cb(false);
-    }
+Database.modifyScheduledPostById = async (id, post, cb) => {
+
+  try {
+    await ScheduledPost.update({
+      body: post.body,
+      title: post.title,
+      frequency: post.frequency,
+      time: post.time
+    }, {
+      where: {
+        id: id
+      }
+    });
     log.info(`New automated post was added with title ${post.title}`);
     return cb(true);
-  });
+  } catch (e) {
+    log.error(e);
+    return cb(false);
+  }
 };
 
-Database.deleteScheduledPostById = (id, cb) => {
-  db.run('DELETE FROM scheduled_posts WHERE id=?', [id], (err) => {
-    if (err) {
-      log.error(err.message);
-      return cb(false);
-    }
-    log.info(`Post deleted with ID ${id}`);
+Database.deleteScheduledPostById = async (id, cb) => {
+  try {
+    await ScheduledPost.destroy({
+      where: {
+        id: id
+      }
+    });
+    log.info(`New automated post was added with title ${post.title}`);
     return cb(true);
-  });
+  } catch (e) {
+    log.error(e);
+    return cb(false);
+  }
 };
 
 Database.getAllScheduledPosts = (cb) => {
-  db.all(`SELECT * FROM scheduled_posts;`, [], (err, posts) => {
-    if (err) {
-      log.error(err);
-      return cb(false);
-    }
-    return cb(posts);
+  ScheduledPost.findAll().then(resp => {
+    return cb(resp);
+  }).catch(e => {
+    log.error(e);
+    return cb(false);
   });
 };
 
 Database.getCreatedPostsByScheduledId = (id, limit = 50, cb) => {
-  db.all(`SELECT * FROM created_posts WHERE scheduled_post_id=? ORDER BY id DESC LIMIT ?;`, [id, limit], (err, posts) => {
-    if (err) {
-      log.error(err);
-      return cb(false);
-    }
+  CreatedPost.findAll({
+    where: {
+      scheduled_post_id: id
+    },
+    limit: limit
+  }).then(posts => {
     return cb(posts);
+
+  }).catch(err => {
+    log.error(err);
+    return cb(false);
   });
 };
 
 Database.getCreatedPostsByScheduledIdNotRemoved = (id, limit = 50, cb) => {
-  db.all(`SELECT * FROM created_posts WHERE scheduled_post_id=? AND removed=0 ORDER BY id DESC LIMIT ?;`, [id, limit], (err, posts) => {
-    if (err) {
-      log.error(err);
-      return cb(false);
-    }
+  CreatedPost.findAll({
+    where: {
+      scheduled_post_id: id,
+      removed: false
+    },
+    limit: limit
+  }).then(posts => {
     return cb(posts);
+
+  }).catch(err => {
+    log.error(err);
+    return cb(false);
   });
 };
 
-Database.setPostAsRemoved = (id, removed = true, cb) => {
-  db.run('UPDATE created_posts SET removed=? WHERE id=?', [+removed, id], (err) => {
-    if (err) {
-      log.error(err);
-      return cb(false);
-    }
-    return cb(posts);
-  });
+Database.setPostAsRemoved = async (id, removed = true, cb) => {
+  try {
+    await CreatedPost.update({removed: removed}, {where: {id: id}});
+    return cb(true);
+  } catch (e) {
+    log.error(err);
+    return cb(false);
+  }
 };
 
-Database.init();
 module.exports = Database;
