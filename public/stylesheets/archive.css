@@ -1,0 +1,14 @@
+#archivecontainer {
+  display: flex;
+  margin: 0 auto;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding-top: 20px;
+}
+
+.entry {
+  text-decoration: none;
+  font-size: 22px;
+  color: white;
+}
