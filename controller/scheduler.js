@@ -18,13 +18,13 @@ Date.locale = {
 };
 
 const dayMap = {
-  "Sunday": 0,
-  "Monday": 1,
-  "Tuesday": 2,
-  "Wednesday": 3,
-  "Thursday": 4,
-  "Friday": 5,
-  "Saturday": 6
+  'Sunday': 0,
+  'Monday': 1,
+  'Tuesday': 2,
+  'Wednesday': 3,
+  'Thursday': 4,
+  'Friday': 5,
+  'Saturday': 6
 };
 
 let Scheduler = {};
@@ -37,25 +37,25 @@ Scheduler.refresh = _ => {
   }
   Database.getAllScheduledPosts(posts => {
     if (!posts && !Array.isArray(posts)) {
-      log.error("Error loading posts!");
+      log.error('Error loading posts!');
       return;
     }
     for (const post of posts) {
       try {
-        let splitTime = post.time.split(":");
+        let splitTime = post.time.split(':');
         const hour = parseInt(splitTime[0]);
         const minute = parseInt(splitTime[1]);
         const rule = new schedule.RecurrenceRule();
         rule.minute = minute;
         rule.hour = hour;
-        if (post.frequency !== "ALL") { // Daily post
+        if (post.frequency !== 'ALL') { // Daily post
           rule.dayOfWeek = dayMap[post.frequency];
         }
         const job = schedule.scheduleJob(rule, function () {
-          log.info("Posting scheduled post with title " + post.title);
+          log.info('Posting scheduled post with title ' + post.title);
           let d = new Date();
           let dateString = `${d.getMonthName()} ${d.getDate()}, ${d.getFullYear()}`;
-          let fullTitle = post.title.replace("<DATE>", dateString);
+          let fullTitle = post.title.replace('<DATE>', dateString);
           PostController.archiveOldById(post.id);
           PostController.createNewPost(fullTitle, post.body, post.id, true);
           ArchiveController.createArchiveHtml();
