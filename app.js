@@ -47,6 +47,18 @@ app.use('/admin', basicAuth({
   realm: 'ChurningRealm'
 }), adminRouter);
 
+app.get('/archive', function (req, res, next) {
+  res.sendFile(path.join(__dirname + '/public/archives/index.html'));
+});
+
+app.get('/post/:id', function (req, res, next) {
+  const id = parseInt(req.params.id);
+  if (!isNumber(id)) {
+    return res.status(400).end();
+  }
+  res.sendFile(path.join(__dirname + '/public/archives/' + id + '.html'));
+});
+
 app.use('/', minify({
   cache: __dirname + '/public/cache',
   uglifyJsModule: null,
@@ -69,5 +81,9 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+function isNumber(n) {
+  return !isNaN(parseFloat(n)) && !isNaN(n - 0);
+}
 
 module.exports = app;
