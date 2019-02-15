@@ -3485,11 +3485,6 @@
     "keyword": "Stockholm-Bromma Airport"
   },
   {
-    "about": "Bumbar",
-    "flair": "BMB",
-    "keyword": "Bumbar Airport"
-  },
-  {
     "about": "Brigham City",
     "flair": "BMC",
     "keyword": "Brigham City Airport"
@@ -4313,11 +4308,6 @@
     "about": "Bulolo",
     "flair": "BUL",
     "keyword": "Bulolo Airport"
-  },
-  {
-    "about": "Butler",
-    "flair": "BUM",
-    "keyword": "Butler Memorial Airport"
   },
   {
     "about": "Buenaventura",
@@ -6025,11 +6015,6 @@
     "keyword": "Coonabarabran Airport"
   },
   {
-    "about": "Cochin",
-    "flair": "COK",
-    "keyword": "Cochin International Airport"
-  },
-  {
     "about": "Coll Island",
     "flair": "COL",
     "keyword": "Coll Airport"
@@ -7155,11 +7140,6 @@
     "keyword": "Dijon-Bourgogne Airport"
   },
   {
-    "about": "Dili",
-    "flair": "DIL",
-    "keyword": "Presidente Nicolau Lobato International Airport"
-  },
-  {
     "about": "Dimbokro",
     "flair": "DIM",
     "keyword": "Dimbokro Airport"
@@ -7715,11 +7695,6 @@
     "keyword": "Dundo Airport"
   },
   {
-    "about": "Corolla",
-    "flair": "DUF",
-    "keyword": "Pine Island Airport"
-  },
-  {
     "about": "Douglas Bisbee",
     "flair": "DUG",
     "keyword": "Bisbee Douglas International Airport"
@@ -7908,11 +7883,6 @@
     "about": "Hondarribia",
     "flair": "EAS",
     "keyword": "San Sebastian Airport"
-  },
-  {
-    "about": "Wenatchee",
-    "flair": "EAT",
-    "keyword": "Pangborn Memorial Airport"
   },
   {
     "about": "Eau Claire",
@@ -11338,11 +11308,6 @@
     "about": "Hof",
     "flair": "HOQ",
     "keyword": "Hof-Plauen Airport"
-  },
-  {
-    "about": "Horta",
-    "flair": "HOR",
-    "keyword": "Horta Airport"
   },
   {
     "about": "Chos Malal",
@@ -15700,11 +15665,6 @@
     "keyword": "RAF Lossiemouth"
   },
   {
-    "about": "Lampedusa",
-    "flair": "LMP",
-    "keyword": "Lampedusa Airport"
-  },
-  {
     "about": "",
     "flair": "LMQ",
     "keyword": "Marsa Brega Airport"
@@ -16893,11 +16853,6 @@
     "about": "Memphis",
     "flair": "MEM",
     "keyword": "Memphis International Airport"
-  },
-  {
-    "about": "Mende/Brenoux",
-    "flair": "MEN",
-    "keyword": "Mende-Brenoux Airport"
   },
   {
     "about": "Mersing",
