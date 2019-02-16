@@ -36,10 +36,12 @@ ArchiveController.createArchiveHtml = () => {
       return;
     }
     const formattedPosts = [];
+    let d = new Date();
+    let dateString = `${d.getMonthName()} ${d.getDate()}, ${d.getFullYear()}`;
     for (const post of posts) {
       formattedPosts.push({
         href: '/post/' + post.id,
-        title: post.title
+        title: post.title.replace("<DATE>", dateString)
       });
     }
     ejs.renderFile(template, {
