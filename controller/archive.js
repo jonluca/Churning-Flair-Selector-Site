@@ -31,6 +31,10 @@ const ArchiveController = {};
 
 ArchiveController.createArchiveHtml = () => {
   db.getAllScheduledPosts(posts => {
+    if (!posts || !posts.length) {
+      console.log("No posts!");
+      return;
+    }
     const formattedPosts = [];
     for (const post of posts) {
       formattedPosts.push({
