@@ -139,3 +139,4 @@ fabric.properties
 .idea/httpRequests
 
 db.sqlite
+public/archives/*
