@@ -95,7 +95,7 @@ function registerEventListeners() {
     let firstFlairSelection = $("#first-flair").text();
     let secondFlairSelection = $("#second-flair").text();
     if (!firstFlairSelection && !secondFlairSelection) {
-      swal("Error!", "Invalid flair selection! You must select at least one flair.", "error");
+      swal.fire("Error!", "Invalid flair selection! You must select at least one flair.", "error");
       return;
     }
     let flair = firstFlairSelection || secondFlairSelection;
@@ -111,15 +111,15 @@ function registerEventListeners() {
         flair: flair
       },
       success(data, textStatus, jqXHR) {
-        swal("Success!", "Your flair should be updated in the next 15 minutes!", "success");
+        swal.fire("Success!", "Your flair should be updated in the next 15 minutes!", "success");
       },
       error(jqXHR, textStatus) {
         if (jqXHR.status === 403) {
-          swal("Error!", "Invalid flair selection!", "error");
+          swal.fire("Error!", "Invalid flair selection!", "error");
         } else if (jqXHR.status === 500) {
-          swal("Error!", "Server error requesting profile information!", "error");
+          swal.fire("Error!", "Server error requesting profile information!", "error");
         } else {
-          swal("Error!", "An unknown error occurred!", "error");
+          swal.fire("Error!", "An unknown error occurred!", "error");
         }
         console.error(textStatus);
       }
@@ -134,15 +134,15 @@ function registerEventListeners() {
         delete: true
       },
       success(data, textStatus, jqXHR) {
-        swal("Success!", "Your flair should be deleted in the next 15 minutes!", "success");
+        swal.fire("Success!", "Your flair should be deleted in the next 15 minutes!", "success");
       },
       error(jqXHR, textStatus) {
         if (jqXHR.status === 403) {
-          swal("Error!", "Invalid flair selection!", "error");
+          swal.fire("Error!", "Invalid flair selection!", "error");
         } else if (jqXHR.status === 500) {
-          swal("Error!", "Server error requesting profile information!", "error");
+          swal.fire("Error!", "Server error requesting profile information!", "error");
         } else {
-          swal("Error!", "An unknown error occurred!", "error");
+          swal.fire("Error!", "An unknown error occurred!", "error");
         }
         console.error(textStatus);
       }

@@ -63,7 +63,7 @@ function registerClickHandlers() {
 
   $(document).on('click', '.delete-post', e => {
     let id = $(e.target).attr('data-id');
-    swal({
+    swal.fire({
       title: 'Are you sure?',
       text: "You won't be able to revert this!",
       type: 'warning',
@@ -105,7 +105,7 @@ function registerClickHandlers() {
     let title = $("#title").val();
     let time = $("#time").val();
     if (!body || !frequency || !title || !time) {
-      swal("Error!", "Invalid post!", "error");
+      swal.fire("Error!", "Invalid post!", "error");
       return;
     }
     if (id === 0) {
@@ -130,10 +130,10 @@ function updatePost(title, body, frequency, time, id) {
     },
     success(data, textStatus, jqXHR) {
       if (jqXHR.status !== 200) {
-        swal("Error!", "Invalid post!", "error");
+        swal.fire("Error!", "Invalid post!", "error");
         return;
       }
-      swal("Success!", "Post successfully updated!", "success");
+      swal.fire("Success!", "Post successfully updated!", "success");
       loadPosts();
     }
   });
@@ -152,10 +152,10 @@ function createNewPost(title, body, frequency, time) {
     },
     success(data, textStatus, jqXHR) {
       if (jqXHR.status !== 200) {
-        swal("Error!", "Invalid post!", "error");
+        swal.fire("Error!", "Invalid post!", "error");
         return;
       }
-      swal("Success!", "New scheduled post successfully created!", "success");
+      swal.fire("Success!", "New scheduled post successfully created!", "success");
       loadPosts();
       $("#title").val("");
       $("#body").val("");
@@ -173,10 +173,10 @@ function deletePostById(id) {
     },
     success(data, textStatus, jqXHR) {
       if (jqXHR.status !== 200) {
-        swal("Error!", "Invalid post!", "error");
+        swal.fire("Error!", "Invalid post!", "error");
         return;
       }
-      swal("Success!", "Successfully deleted post!", "success");
+      swal.fire("Success!", "Successfully deleted post!", "success");
       loadPosts();
     }
   });
