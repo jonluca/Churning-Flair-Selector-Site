@@ -123,36 +123,9 @@ router.get('/flair', function (req, res, next) {
       });
     }
   );
-
 });
 
-/* GET flair selector page. */
-router.post('/save', function (req, res, next) {
-  // if (!req.session.access) {
-  //   res.status(301);
-  //   return res.redirect('/');
-  // }
-  const flairSelection = req.body.flair;
-  if (!flairSelection) {
-    res.status(403);
-    return res.end();
-  }
-  let flairs = flairSelection.split(",");
-  for (const flair of flairs) {
-    if (!FlairController.isValidFlair(flair)) {
-      res.status(403);
-      return res.end();
-    }
-  }
-
-  // Generate a new reddit instance so as to not pollute the global helper instance
-  const redditUserInstance = new RedditApi({
-    app_id: config.web_app_id,
-    app_secret: config.web_app_secret,
-    redirect_uri: config.redirect,
-    access_token: req.signedCookies['access_token']
-  });
-
+function setFlair(redditUserInstance, flair, res) {
   redditUserInstance.get(
     '/api/v1/me',
     {},
@@ -174,7 +147,7 @@ router.post('/save', function (req, res, next) {
           error: {}
         });
       }
-      FlairController.setUserFlair(user.name, flairs.join(", "), success => {
+      FlairController.setUserFlair(user.name, flair, success => {
         if (success) {
           return res.status(200).end();
         }
@@ -182,6 +155,39 @@ router.post('/save', function (req, res, next) {
       });
     }
   );
+}
 
+/* GET flair selector page. */
+router.post('/save', function (req, res, next) {
+  const shouldDelete = req.body.delete;
+  const flairSelection = req.body.flair;
+  let flairs = [];
+  if (!shouldDelete) {
+    if (!flairSelection) {
+      res.status(403);
+      return res.end();
+    }
+    flairs = flairSelection.split(",");
+    for (const flair of flairs) {
+      if (!FlairController.isValidFlair(flair)) {
+        res.status(403);
+        return res.end();
+      }
+    }
+  }
+
+  // Generate a new reddit instance so as to not pollute the global helper instance
+  const redditUserInstance = new RedditApi({
+    app_id: config.web_app_id,
+    app_secret: config.web_app_secret,
+    redirect_uri: config.redirect,
+    access_token: req.signedCookies['access_token']
+  });
+  if (shouldDelete) {
+    setFlair(redditUserInstance, '', res);
+    return;
+  }
+  setFlair(redditUserInstance, flairs.join(', '), res);
 });
+
 module.exports = router;

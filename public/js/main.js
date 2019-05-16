@@ -125,6 +125,29 @@ function registerEventListeners() {
       }
     });
   });
+  $("#deleteFlair").on('click', (ev) => {
+    $.ajax({
+      method: 'POST',
+      url: '/save',
+      type: 'json',
+      data: {
+        delete: true
+      },
+      success(data, textStatus, jqXHR) {
+        swal("Success!", "Your flair should be deleted in the next 15 minutes!", "success");
+      },
+      error(jqXHR, textStatus) {
+        if (jqXHR.status === 403) {
+          swal("Error!", "Invalid flair selection!", "error");
+        } else if (jqXHR.status === 500) {
+          swal("Error!", "Server error requesting profile information!", "error");
+        } else {
+          swal("Error!", "An unknown error occurred!", "error");
+        }
+        console.error(textStatus);
+      }
+    });
+  });
 }
 
 function resetSaveDisabledStatus() {

@@ -33,6 +33,18 @@ header h1 {
   cursor: pointer;
 }
 
+#deleteFlair {
+  background-color: #6BBE92;
+  width: 302px;
+  border: 0;
+  padding: 10px 0;
+  margin: 10px 0px 5px 0;
+  text-align: center;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+}
+
 #save:disabled {
   background: #F5F5F5;
   color: #a3a3a3;
@@ -347,6 +359,17 @@ footer a {
   text-decoration: none;
 }
 
+#deleteFlair {
+  display: inline-block;
+  position: relative;
+  padding: 10px 15px;
+  margin: 0px 50px 50px;
+  color: whitesmoke;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-decoration: none;
+}
+
 
 #posts li:first-child {
   border-top-left-radius: 4px;
@@ -470,4 +493,11 @@ footer a {
   color: #fff;
   padding: 20px;
   margin: 0 auto;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
 }
