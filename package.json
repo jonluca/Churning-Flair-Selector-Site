@@ -20,7 +20,7 @@
     "randomstring": "1.1.5",
     "reddit-oauth": "1.1.1",
     "request": "latest",
-    "sequelize": "5.6.1",
+    "sequelize": "5.8.9",
     "serve-index": "1.9.1",
     "simple-node-logger": "18.12.22",
     "sqlite3": "4.0.6",
