@@ -23,7 +23,7 @@
     "sequelize": "6.2.4",
     "serve-index": "1.9.1",
     "simple-node-logger": "18.12.24",
-    "sqlite3": "5.0.0",
+    "sqlite3": "5.0.1",
     "throttled-request": "latest"
   }
 }
