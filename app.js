@@ -12,9 +12,22 @@ const fs = require('fs');
 const minify = require('express-minify');
 const basicAuth = require('express-basic-auth');
 const serveIndex = require('serve-index');
+const { expressCspHeader, INLINE, NONE, SELF } = require('express-csp-header');
 
 const app = express();
 app.disable('x-powered-by');
+
+ 
+app.use(expressCspHeader({
+    directives: {
+        'default-src': [SELF],
+        'script-src': [SELF, INLINE, 'jquery.com','cloudflare.com','jsdelivr.com'],
+        'style-src': [SELF, 'mystyles.net'],
+        'img-src': ['data:', 'images.com'],
+        'worker-src': [NONE],
+        'block-all-mixed-content': true
+    }
+}));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
