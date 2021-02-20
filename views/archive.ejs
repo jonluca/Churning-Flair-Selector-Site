@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<% include partial/head.ejs %>
+<%- include('partial/head.ejs'); -%>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.33.1/dist/sweetalert2.all.min.js"></script>
 <link href="//cdn.jsdelivr.net/timepicker.js/latest/timepicker.min.css" rel="stylesheet">
 <link href="/stylesheets/archive.css" rel="stylesheet">
@@ -14,6 +14,6 @@
         <a class="entry" target="_blank" href="<%= post.href %>"><%= post.title %></a>
     <% } %>
 </div>
-<% include partial/footer.ejs %>
+<%- include('partial/footer.ejs'); -%>
 </body>
 </html>

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<% include partial/head.ejs %>
+<%- include('partial/head.ejs'); -%>
 <body>
 <header>
     <h1>/r/<%= subreddit %> Flair Selector</h1>
@@ -9,6 +9,6 @@
     <div id="start-button" onclick="location.href='<%= redirect_url %>'">
         <a class="button-link" href="<%= redirect_url %>">Allow Access</a></div>
 </div>
-<% include partial/footer.ejs %>
+<%- include('partial/footer.ejs'); -%>
 </body>
 </html>

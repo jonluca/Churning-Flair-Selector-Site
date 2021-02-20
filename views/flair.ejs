@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<% include partial/head.ejs %>
+<%- include('partial/head.ejs'); -%>
 <script src="/js/main.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
 <body>
@@ -33,6 +33,6 @@
         <button id="deleteFlair">Delete Existing Flair</button>
     </div>
 </div>
-<% include partial/footer.ejs %>
+<%- include('partial/footer.ejs'); -%>
 </body>
 </html>
