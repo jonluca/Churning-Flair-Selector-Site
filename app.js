@@ -17,17 +17,7 @@ const { expressCspHeader, INLINE, NONE, SELF } = require('express-csp-header');
 const app = express();
 app.disable('x-powered-by');
 
- 
-app.use(expressCspHeader({
-    directives: {
-        'default-src': [SELF],
-        'script-src': [SELF, INLINE, 'jquery.com','cloudflare.com','jsdelivr.com'],
-        'style-src': [SELF, 'mystyles.net'],
-        'img-src': ['data:', 'images.com'],
-        'worker-src': [NONE],
-        'block-all-mixed-content': true
-    }
-}));
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -43,6 +33,15 @@ app.use(helmet({xssFilter: false}));
 const accessLogStream = fs.createWriteStream(path.join(__dirname, '/logs/access.log'), {
   flags: 'a'
 });
+
+ 
+app.use(expressCspHeader({
+    directives: {
+        'script-src': [SELF, INLINE, 'jquery.com','cloudflare.com','jsdelivr.com', '*'],
+        'block-all-mixed-content': false,
+        reportOnly: true
+    }
+}));
 
 app.use(morgan(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"', {
   stream: accessLogStream
