@@ -28,20 +28,11 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser(config.web_app_secret));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(helmet({xssFilter: false}));
+app.use(helmet({xssFilter: false, contentSecurityPolicy: false}));
 // Logging
 const accessLogStream = fs.createWriteStream(path.join(__dirname, '/logs/access.log'), {
   flags: 'a'
 });
-
- 
-app.use(expressCspHeader({
-    directives: {
-        'script-src': [SELF, INLINE, 'jquery.com','cloudflare.com','jsdelivr.com', '*'],
-        'block-all-mixed-content': false,
-        reportOnly: true
-    }
-}));
 
 app.use(morgan(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"', {
   stream: accessLogStream
