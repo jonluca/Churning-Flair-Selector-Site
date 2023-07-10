@@ -9,7 +9,6 @@ let ScheduledPost, CreatedPost;
 let db = new Sequelize("database", "", "", {
   host: "localhost",
   dialect: "sqlite",
-  operatorsAliases: false,
   pool: {
     max: 5,
     min: 0,
