@@ -3,16 +3,12 @@ const router = express.Router();
 const Scheduler = require("../controller/scheduler");
 const db = require("../controller/db");
 const ArchiveController = require("../controller/archive");
-const path = require("path");
 
 db.init((_) => {
   Scheduler.refresh();
   ArchiveController.createArchiveHtml();
 });
 
-const log = require("simple-node-logger").createSimpleLogger(
-  path.join(__dirname, "../logs/activity.log")
-);
 /* GET auth callback page. */
 router.get("/", function (req, res, next) {
   res.render("admin.ejs");
@@ -70,12 +66,12 @@ router.post("/posts/update", function (req, res, next) {
   });
 });
 
-router.delete("/posts/post", function (req, res, next) {
+router.delete("/posts/post", async function (req, res, next) {
   let id = req.body.id;
   if (!id) {
     return res.status(401);
   }
-  db.deleteScheduledPostById(id, (status) => {
+  await db.deleteScheduledPostById(id, (status) => {
     Scheduler.refresh();
     if (!status) {
       return res.status(500).end();
