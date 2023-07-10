@@ -1,12 +1,12 @@
 $(() => {
   registerClickHandlers();
   loadPosts();
-  var timepicker = new TimePicker(['#time'], {
-    theme: 'dark', // or 'blue-grey'
-    lang: 'en' // 'en', 'pt' for now
+  var timepicker = new TimePicker(["#time"], {
+    theme: "dark", // or 'blue-grey'
+    lang: "en", // 'en', 'pt' for now
   });
-  timepicker.on('change', function (evt) {
-    var value = (evt.hour || '00') + ':' + (evt.minute || '00');
+  timepicker.on("change", function (evt) {
+    var value = (evt.hour || "00") + ":" + (evt.minute || "00");
     evt.element.value = value;
   });
 });
@@ -14,28 +14,28 @@ let posts;
 
 function loadPosts() {
   $.ajax({
-    method: 'GET',
-    url: '/admin/posts',
-    type: 'json',
+    method: "GET",
+    url: "/admin/posts",
+    type: "json",
     success(data, textStatus, jqXHR) {
       if (!data) {
         console.error("Error loading posts!");
         return;
       }
       posts = data;
-      let list = '';
+      let list = "";
       for (const post of data) {
-        let safeTitle = $('<div>').text(post.title).html();
+        let safeTitle = $("<div>").text(post.title).html();
         list += `<li class="post" data-id="${post.id}">${safeTitle}<icon class="delete-post" data-id="${post.id}">X</icon></li>`;
       }
       $("#posts").html(list);
-    }
+    },
   });
 }
 
 function loadPostToEdit(post) {
   $("#title").val(post.title);
-  $("#title").attr('data-id', post.id);
+  $("#title").attr("data-id", post.id);
   $("#body").val(post.body);
   if (post.frequency === "ALL") {
     $("#frequency").val("Daily");
@@ -49,9 +49,9 @@ function loadPostToEdit(post) {
 }
 
 function registerClickHandlers() {
-  $(document).on('click', '.post', e => {
-    let id = $(e.target).attr('data-id');
-    $(".hidden").removeClass('hidden');
+  $(document).on("click", ".post", (e) => {
+    let id = $(e.target).attr("data-id");
+    $(".hidden").removeClass("hidden");
     id = parseInt(id);
     for (const post of posts) {
       if (post.id === id) {
@@ -61,24 +61,26 @@ function registerClickHandlers() {
     }
   });
 
-  $(document).on('click', '.delete-post', e => {
-    let id = $(e.target).attr('data-id');
-    swal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
-      type: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
-    }).then((result) => {
-      if (result.value) {
-        deletePostById(id);
-      }
-    });
+  $(document).on("click", ".delete-post", (e) => {
+    let id = $(e.target).attr("data-id");
+    swal
+      .fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      })
+      .then((result) => {
+        if (result.value) {
+          deletePostById(id);
+        }
+      });
   });
 
-  $("#frequency").on('change', e => {
+  $("#frequency").on("change", (e) => {
     if (e.target.value === "Weekly") {
       $("#day-container").show();
     } else {
@@ -86,17 +88,17 @@ function registerClickHandlers() {
     }
   });
 
-  $("#new").on('click', e => {
+  $("#new").on("click", (e) => {
     e.preventDefault();
-    $(".hidden").removeClass('hidden');
-    $("#title").attr('data-id', '0');
+    $(".hidden").removeClass("hidden");
+    $("#title").attr("data-id", "0");
     $("#title").val("");
     $("#body").val("");
   });
 
-  $("#save").on('click', e => {
+  $("#save").on("click", (e) => {
     e.preventDefault();
-    const id = parseInt($("#title").attr('data-id'));
+    const id = parseInt($("#title").attr("data-id"));
     let body = $("#body").val();
     let frequency = "ALL";
     if ($("#frequency").val() === "Weekly") {
@@ -118,15 +120,15 @@ function registerClickHandlers() {
 
 function updatePost(title, body, frequency, time, id) {
   $.ajax({
-    method: 'POST',
-    url: '/admin/posts/update',
-    type: 'json',
+    method: "POST",
+    url: "/admin/posts/update",
+    type: "json",
     data: {
       body,
       title,
       frequency,
       time,
-      id
+      id,
     },
     success(data, textStatus, jqXHR) {
       if (jqXHR.status !== 200) {
@@ -135,41 +137,45 @@ function updatePost(title, body, frequency, time, id) {
       }
       swal.fire("Success!", "Post successfully updated!", "success");
       loadPosts();
-    }
+    },
   });
 }
 
 function createNewPost(title, body, frequency, time) {
   $.ajax({
-    method: 'POST',
-    url: '/admin/posts/new',
-    type: 'json',
+    method: "POST",
+    url: "/admin/posts/new",
+    type: "json",
     data: {
       body,
       title,
       frequency,
-      time
+      time,
     },
     success(data, textStatus, jqXHR) {
       if (jqXHR.status !== 200) {
         swal.fire("Error!", "Invalid post!", "error");
         return;
       }
-      swal.fire("Success!", "New scheduled post successfully created!", "success");
+      swal.fire(
+        "Success!",
+        "New scheduled post successfully created!",
+        "success"
+      );
       loadPosts();
       $("#title").val("");
       $("#body").val("");
-    }
+    },
   });
 }
 
 function deletePostById(id) {
   $.ajax({
-    method: 'DELETE',
-    url: '/admin/posts/post',
-    type: 'json',
+    method: "DELETE",
+    url: "/admin/posts/post",
+    type: "json",
     data: {
-      id
+      id,
     },
     success(data, textStatus, jqXHR) {
       if (jqXHR.status !== 200) {
@@ -178,6 +184,6 @@ function deletePostById(id) {
       }
       swal.fire("Success!", "Successfully deleted post!", "success");
       loadPosts();
-    }
+    },
   });
 }

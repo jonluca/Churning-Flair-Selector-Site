@@ -2,11 +2,11 @@
  Original Author: https://github.com/aiham/reddit-oauth
  Modifications: JonLuca DeCaro
  */
-'use strict';
+"use strict";
 
-const libVersion = require('../package.json').version;
-const request = require('request');
-const throttledRequestLib = require('throttled-request');
+const libVersion = require("../package.json").version;
+const request = require("request");
+const throttledRequestLib = require("throttled-request");
 
 /**
  * Creates instance of {@link RedditApi}.
@@ -23,15 +23,14 @@ const throttledRequestLib = require('throttled-request');
  * @param {Number} [options.request_buffer=2000] - Time in milliseconds to buffer for each request
  */
 function RedditApi(options) {
-
-  if (!options || typeof options !== 'object') {
-    throw 'Invalid options: ' + options;
+  if (!options || typeof options !== "object") {
+    throw "Invalid options: " + options;
   }
-  if (typeof options.app_id !== 'string' || options.app_id.length < 1) {
-    throw 'Invalid app ID: ' + options.app_id;
+  if (typeof options.app_id !== "string" || options.app_id.length < 1) {
+    throw "Invalid app ID: " + options.app_id;
   }
-  if (typeof options.app_secret !== 'string' || options.app_secret.length < 1) {
-    throw 'Invalid app secret: ' + options.app_secret;
+  if (typeof options.app_secret !== "string" || options.app_secret.length < 1) {
+    throw "Invalid app secret: " + options.app_secret;
   }
 
   /**
@@ -58,7 +57,8 @@ function RedditApi(options) {
    * @type {String}
    * @default reddit-flair-selector/x.y.z by jonluca
    */
-  this.user_agent = options.user_agent || 'reddit-flair-selector/' + libVersion + ' by jonluca';
+  this.user_agent =
+    options.user_agent || "reddit-flair-selector/" + libVersion + " by jonluca";
 
   /**
    * OAuth access token
@@ -82,13 +82,11 @@ function RedditApi(options) {
   this.throttled_request = throttledRequestLib(request);
   this.throttled_request.configure({
     requests: 1,
-    milliseconds: options.request_buffer || 2000
+    milliseconds: options.request_buffer || 2000,
   });
-
 }
 
 RedditApi.prototype = {
-
   constructor: RedditApi,
 
   /**
@@ -96,10 +94,9 @@ RedditApi.prototype = {
    * @return {Boolean}
    */
   isAuthed: function RedditApi__isAuthed() {
-
-    return typeof this.access_token === 'string' &&
-      this.access_token.length > 0;
-
+    return (
+      typeof this.access_token === "string" && this.access_token.length > 0
+    );
   },
 
   /**
@@ -137,8 +134,12 @@ RedditApi.prototype = {
    * @param {RedditApi~ApiRequestCallback} callback - Callback function
    * @param {Boolean} [is_refreshing_token=false] - If false, will attempt to refresh tokens then retry request
    */
-  request: function RedditApi__request(path, options, callback, is_refreshing_token) {
-
+  request: function RedditApi__request(
+    path,
+    options,
+    callback,
+    is_refreshing_token
+  ) {
     if (!options) {
       options = {};
     }
@@ -146,68 +147,71 @@ RedditApi.prototype = {
     if (!options.headers) {
       options.headers = {};
     }
-    options.headers['User-Agent'] = this.user_agent;
+    options.headers["User-Agent"] = this.user_agent;
     if (this.isAuthed()) {
-      options.headers['Authorization'] = 'bearer ' + this.access_token;
+      options.headers["Authorization"] = "bearer " + this.access_token;
     }
 
     if (!options.url) {
-      const subdomain = this.isAuthed() ? 'oauth' : 'ssl';
-      options.url = 'https://' + subdomain + '.reddit.com' + path;
+      const subdomain = this.isAuthed() ? "oauth" : "ssl";
+      options.url = "https://" + subdomain + ".reddit.com" + path;
     }
 
     if (!options.method) {
-      options.method = 'GET';
+      options.method = "GET";
     }
 
-    this.throttled_request(options, (function (api) {
-
-      return function (error, response, body) {
-
-        if (!error && response && response.statusCode === 200) {
-          try {
-            response.jsonData = JSON.parse(body);
-          } catch (e) {
-            error = e;
+    this.throttled_request(
+      options,
+      (function (api) {
+        return function (error, response, body) {
+          if (!error && response && response.statusCode === 200) {
+            try {
+              response.jsonData = JSON.parse(body);
+            } catch (e) {
+              error = e;
+            }
+          } else if (
+            !is_refreshing_token &&
+            response &&
+            response.statusCode === 401 &&
+            api.refresh_token
+          ) {
+            api.refreshToken(function (success) {
+              if (success) {
+                api.request(path, options, callback);
+              } else {
+                callback.call(api, error, response, data);
+              }
+            });
+            return;
+          } else if (
+            api.username &&
+            api.password &&
+            response &&
+            response.statusCode === 401
+          ) {
+            api.passAuth(api.username, api.password, function (success) {
+              if (success) {
+                api.request(path, options, callback);
+              } else {
+                callback.call(api, error, response, data);
+              }
+            });
+          } else {
+            console.error(
+              "reddit-oauth Error:",
+              error,
+              ", Status code:",
+              response ? response.statusCode : "Unknown",
+              ", Status message:",
+              response ? response.statusMessage : "Unknown"
+            );
           }
-        } else if (
-          !is_refreshing_token &&
-          response &&
-          response.statusCode === 401 &&
-          api.refresh_token
-        ) {
-          api.refreshToken(function (success) {
-
-            if (success) {
-              api.request(path, options, callback);
-            } else {
-              callback.call(api, error, response, data);
-            }
-
-          });
-          return;
-        } else if (api.username && api.password && response &&
-          response.statusCode === 401) {
-          api.passAuth(api.username, api.password, function (success) {
-            if (success) {
-              api.request(path, options, callback);
-            } else {
-              callback.call(api, error, response, data);
-            }
-          });
-        } else {
-          console.error(
-            'reddit-oauth Error:', error,
-            ', Status code:', response ? response.statusCode : 'Unknown',
-            ', Status message:', response ? response.statusMessage : 'Unknown'
-          );
-        }
-        callback.call(api, error, response, body);
-
-      };
-
-    })(this));
-
+          callback.call(api, error, response, body);
+        };
+      })(this)
+    );
   },
 
   /**
@@ -217,43 +221,44 @@ RedditApi.prototype = {
    * @param {RedditApi~ApiRequestCallback} callback - Request callback
    */
   passAuth: function RedditApi__passAuth(username, password, callback) {
-
     this.access_token = null;
     this.refresh_token = null;
     this.username = username;
     this.password = password;
 
-    this.request('/api/v1/access_token', {
-      method: 'POST',
-      form: {
-        grant_type: 'password',
-        username: username,
-        password: password
+    this.request(
+      "/api/v1/access_token",
+      {
+        method: "POST",
+        form: {
+          grant_type: "password",
+          username: username,
+          password: password,
+        },
+        auth: {
+          username: this.app_id,
+          password: this.app_secret,
+        },
       },
-      auth: {
-        username: this.app_id,
-        password: this.app_secret
+      function (error, response, body) {
+        const success =
+          !error &&
+          response &&
+          typeof response === "object" &&
+          response.jsonData &&
+          typeof response.jsonData === "object" &&
+          typeof response.jsonData.access_token === "string" &&
+          response.jsonData.access_token.length > 0;
+
+        if (success) {
+          this.access_token = response.jsonData.access_token;
+        }
+
+        if (callback) {
+          callback(success);
+        }
       }
-    }, function (error, response, body) {
-
-      const success = !error &&
-        response &&
-        typeof response === 'object' &&
-        response.jsonData &&
-        typeof response.jsonData === 'object' &&
-        typeof response.jsonData.access_token === 'string' &&
-        response.jsonData.access_token.length > 0;
-
-      if (success) {
-        this.access_token = response.jsonData.access_token;
-      }
-
-      if (callback) {
-        callback(success);
-      }
-
-    });
-
+    );
   },
 
   /**
@@ -263,28 +268,32 @@ RedditApi.prototype = {
    * @return {String} URL to send user's browser to
    */
   oAuthUrl: function RedditApi__oAuthUrl(state, scope, duration) {
-
     if (Array.isArray(scope)) {
-      scope = scope.join(',');
+      scope = scope.join(",");
     }
 
-    if (typeof scope !== 'string') {
-      throw 'Invalid scope: ' + scope;
+    if (typeof scope !== "string") {
+      throw "Invalid scope: " + scope;
     }
     if (!duration) {
       duration = "permanent";
     }
 
-    const url = 'https://ssl.reddit.com/api/v1/authorize' +
-      '?client_id=' + encodeURIComponent(this.app_id) +
-      '&response_type=code' +
-      '&state=' + encodeURIComponent(state) +
-      '&redirect_uri=' + encodeURIComponent(this.redirect_uri || '') +
-      '&duration=' + duration +
-      '&scope=' + encodeURIComponent(scope);
+    const url =
+      "https://ssl.reddit.com/api/v1/authorize" +
+      "?client_id=" +
+      encodeURIComponent(this.app_id) +
+      "&response_type=code" +
+      "&state=" +
+      encodeURIComponent(state) +
+      "&redirect_uri=" +
+      encodeURIComponent(this.redirect_uri || "") +
+      "&duration=" +
+      duration +
+      "&scope=" +
+      encodeURIComponent(scope);
 
     return url;
-
   },
 
   /**
@@ -296,7 +305,6 @@ RedditApi.prototype = {
    * @param {RedditApi~ApiTokenCallback} callback - Callback function to invoke after tokens are retrieved
    */
   oAuthTokens: function RedditApi__oAuthTokens(state, query, callback) {
-
     if (query.state !== state || !query.code) {
       callback(false);
       return;
@@ -305,38 +313,40 @@ RedditApi.prototype = {
     this.access_token = null;
     this.refresh_token = null;
 
-    this.request('/api/v1/access_token', {
-      method: 'POST',
-      form: {
-        grant_type: 'authorization_code',
-        code: query.code,
-        redirect_uri: this.redirect_uri || ''
+    this.request(
+      "/api/v1/access_token",
+      {
+        method: "POST",
+        form: {
+          grant_type: "authorization_code",
+          code: query.code,
+          redirect_uri: this.redirect_uri || "",
+        },
+        auth: {
+          username: this.app_id,
+          password: this.app_secret,
+        },
       },
-      auth: {
-        username: this.app_id,
-        password: this.app_secret
+      function (error, response, body) {
+        const success =
+          !error &&
+          response &&
+          typeof response === "object" &&
+          response.jsonData &&
+          typeof response.jsonData === "object" &&
+          typeof response.jsonData.access_token === "string" &&
+          response.jsonData.access_token.length > 0;
+
+        if (success) {
+          this.access_token = response.jsonData.access_token;
+          this.refresh_token = response.jsonData.refresh_token;
+        }
+
+        if (callback) {
+          callback(success);
+        }
       }
-    }, function (error, response, body) {
-
-      const success = !error &&
-        response &&
-        typeof response === 'object' &&
-        response.jsonData &&
-        typeof response.jsonData === 'object' &&
-        typeof response.jsonData.access_token === 'string' &&
-        response.jsonData.access_token.length > 0;
-
-      if (success) {
-        this.access_token = response.jsonData.access_token;
-        this.refresh_token = response.jsonData.refresh_token;
-      }
-
-      if (callback) {
-        callback(success);
-      }
-
-    });
-
+    );
   },
 
   /**
@@ -344,39 +354,41 @@ RedditApi.prototype = {
    * @param {RedditApi~ApiTokenCallback} callback - Callback function to invoke after the access token is retrieved
    */
   refreshToken: function RedditApi__refreshToken(callback) {
-
     this.access_token = null;
 
-    this.request('/api/v1/access_token', {
-      method: 'POST',
-      form: {
-        grant_type: 'refresh_token',
-        refresh_token: this.refresh_token
+    this.request(
+      "/api/v1/access_token",
+      {
+        method: "POST",
+        form: {
+          grant_type: "refresh_token",
+          refresh_token: this.refresh_token,
+        },
+        auth: {
+          username: this.app_id,
+          password: this.app_secret,
+        },
       },
-      auth: {
-        username: this.app_id,
-        password: this.app_secret
-      }
-    }, function (error, response, body) {
+      function (error, response, body) {
+        const success =
+          !error &&
+          response &&
+          typeof response === "object" &&
+          response.jsonData &&
+          typeof response.jsonData === "object" &&
+          typeof response.jsonData.access_token === "string" &&
+          response.jsonData.access_token.length > 0;
 
-      const success = !error &&
-        response &&
-        typeof response === 'object' &&
-        response.jsonData &&
-        typeof response.jsonData === 'object' &&
-        typeof response.jsonData.access_token === 'string' &&
-        response.jsonData.access_token.length > 0;
+        if (success) {
+          this.access_token = response.jsonData.access_token;
+        }
 
-      if (success) {
-        this.access_token = response.jsonData.access_token;
-      }
-
-      if (callback) {
-        callback(!error);
-      }
-
-    }, true);
-
+        if (callback) {
+          callback(!error);
+        }
+      },
+      true
+    );
   },
 
   /**
@@ -386,7 +398,6 @@ RedditApi.prototype = {
    * @param {RedditApi~ApiRequestCallback} callback - Callback function
    */
   get: function RedditApi__get(path, params, callback) {
-
     let options = null;
     if (params) {
       for (let key in params) {
@@ -400,7 +411,6 @@ RedditApi.prototype = {
       }
     }
     this.request(path, options, callback);
-
   },
 
   /**
@@ -410,9 +420,8 @@ RedditApi.prototype = {
    * @param {RedditApi~ApiRequestCallback} callback - Callback function
    */
   post: function RedditApi__post(path, params, callback) {
-
     const options = {
-      method: 'POST'
+      method: "POST",
     };
     if (params) {
       for (let key in params) {
@@ -423,7 +432,6 @@ RedditApi.prototype = {
       }
     }
     this.request(path, options, callback);
-
   },
 
   /**
@@ -434,8 +442,13 @@ RedditApi.prototype = {
    * @param {RedditApi~ApiListingRequestCallback} callback - Invoke the next callback to retrieve the next page of the
    *   list
    */
-  getListing: function RedditApi__getListing(path, params, callback, after, count) {
-
+  getListing: function RedditApi__getListing(
+    path,
+    params,
+    callback,
+    after,
+    count
+  ) {
     if (!count) {
       count = 0;
     }
@@ -443,44 +456,57 @@ RedditApi.prototype = {
     let fullPath = path;
 
     if (after) {
-      fullPath += '?after=' + encodeURIComponent(after) + '&count=' + encodeURIComponent(count);
+      fullPath +=
+        "?after=" +
+        encodeURIComponent(after) +
+        "&count=" +
+        encodeURIComponent(count);
     }
 
-    this.get(fullPath, params, (function (reddit) {
+    this.get(
+      fullPath,
+      params,
+      (function (reddit) {
+        return function (error, response, body) {
+          if (error || !response || response.statusCode !== 200) {
+            callback(error, response, body);
+            return;
+          }
 
-      return function (error, response, body) {
+          let nextAfter = null;
+          if (response.jsonData && response.jsonData.data) {
+            nextAfter = response.jsonData.data.after;
+          }
 
-        if (error || !response || response.statusCode !== 200) {
-          callback(error, response, body);
-          return;
-        }
+          let nextCount;
+          if (
+            response.jsonData &&
+            response.jsonData.data &&
+            response.jsonData.data.children
+          ) {
+            nextCount = count + response.jsonData.data.children.length;
+          }
 
-        let nextAfter = null;
-        if (response.jsonData && response.jsonData.data) {
-          nextAfter = response.jsonData.data.after;
-        }
+          const next =
+            nextAfter == null
+              ? null
+              : function () {
+                  reddit.getListing(
+                    path,
+                    params,
+                    callback,
+                    nextAfter,
+                    nextCount
+                  );
+                };
 
-        let nextCount;
-        if (response.jsonData && response.jsonData.data && response.jsonData.data.children) {
-          nextCount = count + response.jsonData.data.children.length;
-        }
-
-        const next = nextAfter == null ? null : function () {
-
-          reddit.getListing(path, params, callback, nextAfter, nextCount);
-
+          if (callback) {
+            callback(error, response, body, next);
+          }
         };
-
-        if (callback) {
-          callback(error, response, body, next);
-        }
-
-      };
-
-    })(this));
-
-  }
-
+      })(this)
+    );
+  },
 };
 
 module.exports = RedditApi;

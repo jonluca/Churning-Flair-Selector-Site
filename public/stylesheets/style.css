@@ -1,7 +1,7 @@
-@import url('https://fonts.googleapis.com/css?family=Roboto');
+@import url("https://fonts.googleapis.com/css?family=Roboto");
 
 body {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   color: #fff;
   margin: 0 auto;
   background-color: #374954;
@@ -13,7 +13,7 @@ header {
   text-align: center;
   width: 100%;
   color: #fff;
-  background: #377D6A;
+  background: #377d6a;
 }
 
 header h1 {
@@ -22,7 +22,7 @@ header h1 {
 }
 
 #save {
-  background-color: #6BBE92;
+  background-color: #6bbe92;
   width: 302px;
   border: 0;
   padding: 10px 0;
@@ -34,7 +34,7 @@ header h1 {
 }
 
 #deleteFlair {
-  background-color: #6BBE92;
+  background-color: #6bbe92;
   width: 302px;
   border: 0;
   padding: 10px 0;
@@ -46,7 +46,7 @@ header h1 {
 }
 
 #save:disabled {
-  background: #F5F5F5;
+  background: #f5f5f5;
   color: #a3a3a3;
   cursor: none;
   pointer-events: none;
@@ -60,7 +60,6 @@ header h1 {
   align-items: center;
   text-align: center;
 }
-
 
 #container {
   display: block;
@@ -118,13 +117,13 @@ header h1 {
   padding: 10px 0 10px 15px;
   font-family: "Open Sans", sans;
   font-weight: 400;
-  color: #377D6A;
+  color: #377d6a;
   background: #efefef;
   border: 0;
   border-radius: 3px;
   outline: 0;
   text-indent: 60px;
-  transition: all .3s ease-in-out;
+  transition: all 0.3s ease-in-out;
 }
 
 .balloon::-webkit-input-placeholder {
@@ -145,7 +144,7 @@ header h1 {
   font-weight: 700;
   text-transform: uppercase;
   text-shadow: 0 1px 0 rgba(19, 74, 70, 0);
-  transition: all .3s ease-in-out;
+  transition: all 0.3s ease-in-out;
   border-radius: 3px;
   background: rgba(122, 184, 147, 0);
 }
@@ -161,12 +160,12 @@ header h1 {
   border-left: 3px solid transparent;
   border-right: 3px solid transparent;
   border-top: 3px solid rgba(122, 184, 147, 0);
-  transition: all .3s ease-in-out;
+  transition: all 0.3s ease-in-out;
 }
 
 .balloon:focus,
 .balloon:active {
-  color: #377D6A;
+  color: #377d6a;
   text-indent: 0;
   background: #fff;
 }
@@ -193,7 +192,7 @@ header h1 {
   -webkit-transform: scale(1.3);
   -ms-transform: scale(1.3);
   transform: scale(1.3);
-  transition: all .1s ease-in-out;
+  transition: all 0.1s ease-in-out;
   color: red;
 }
 
@@ -245,7 +244,7 @@ header h1 {
 
 #start-button:active {
   top: 0px;
-  box-shadow: 0px 0px 0px rgba(15, 165, 60, 0.0);
+  box-shadow: 0px 0px 0px rgba(15, 165, 60, 0);
   background: rgba(20, 224, 133, 1);
 }
 
@@ -257,7 +256,7 @@ header h1 {
 .clear-link {
   text-decoration: none;
   text-transform: uppercase;
-  color: rgba(20, 224, 133, 1);;
+  color: rgba(20, 224, 133, 1);
   vertical-align: bottom;
   cursor: pointer;
 }
@@ -288,7 +287,6 @@ footer {
 footer a {
   text-decoration: none;
   color: #b9b9b9;
-
 }
 
 #title {
@@ -333,7 +331,6 @@ footer a {
   color: red;
 }
 
-
 .new {
   padding: 20px;
   -webkit-border-radius: 5px;
@@ -368,7 +365,6 @@ footer a {
   letter-spacing: 2px;
   text-decoration: none;
 }
-
 
 #posts li:first-child {
   border-top-left-radius: 4px;
@@ -407,19 +403,18 @@ footer a {
   display: none;
 }
 
-
 .big {
   font-size: 1.2em;
 }
 
 .small {
-  font-size: .7em;
+  font-size: 0.7em;
 }
 
 .square {
-  width: .7em;
-  height: .7em;
-  margin: .5em;
+  width: 0.7em;
+  height: 0.7em;
+  margin: 0.5em;
   display: inline-block;
 }
 
@@ -435,13 +430,13 @@ footer a {
   background-color: #1abc9c;
   color: #fff;
   font-size: inherit;
-  padding: .5em;
+  padding: 0.5em;
   padding-right: 2.5em;
   border: 0;
   margin: 0;
   border-radius: 3px;
   text-indent: 0.01px;
-  text-overflow: '';
+  text-overflow: "";
   -webkit-appearance: button; /* hide default arrow in chrome OSX */
 }
 
@@ -452,17 +447,19 @@ footer a {
   pointer-events: none;
 }
 
-.custom-dropdown::after { /*  Custom dropdown arrow */
+.custom-dropdown::after {
+  /*  Custom dropdown arrow */
   content: "\25BC";
   height: 1em;
-  font-size: .625em;
+  font-size: 0.625em;
   line-height: 1;
   right: 1.2em;
   top: 50%;
-  margin-top: -.5em;
+  margin-top: -0.5em;
 }
 
-.custom-dropdown::before { /*  Custom dropdown arrow cover */
+.custom-dropdown::before {
+  /*  Custom dropdown arrow cover */
   width: 2em;
   right: 0;
   top: 0;
@@ -471,21 +468,20 @@ footer a {
 }
 
 .custom-dropdown select[disabled] {
-  color: rgba(0, 0, 0, .3);
+  color: rgba(0, 0, 0, 0.3);
 }
 
 .custom-dropdown select[disabled]::after {
-  color: rgba(0, 0, 0, .1);
+  color: rgba(0, 0, 0, 0.1);
 }
 
 .custom-dropdown::before {
-  background-color: rgba(0, 0, 0, .15);
+  background-color: rgba(0, 0, 0, 0.15);
 }
 
 .custom-dropdown::after {
-  color: rgba(0, 0, 0, .4);
+  color: rgba(0, 0, 0, 0.4);
 }
-
 
 .link {
   background-color: #1abc9c;

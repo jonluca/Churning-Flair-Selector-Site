@@ -1,23 +1,25 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const Scheduler = require('../controller/scheduler');
-const db = require('../controller/db');
-const ArchiveController = require('../controller/archive');
-const path = require('path');
+const Scheduler = require("../controller/scheduler");
+const db = require("../controller/db");
+const ArchiveController = require("../controller/archive");
+const path = require("path");
 
-db.init(_ => {
+db.init((_) => {
   Scheduler.refresh();
   ArchiveController.createArchiveHtml();
 });
 
-const log = require('simple-node-logger').createSimpleLogger(path.join(__dirname, '../logs/activity.log'));
+const log = require("simple-node-logger").createSimpleLogger(
+  path.join(__dirname, "../logs/activity.log")
+);
 /* GET auth callback page. */
-router.get('/', function (req, res, next) {
-  res.render('admin.ejs');
+router.get("/", function (req, res, next) {
+  res.render("admin.ejs");
 });
 
-router.get('/posts', function (req, res, next) {
-  db.getAllScheduledPosts(posts => {
+router.get("/posts", function (req, res, next) {
+  db.getAllScheduledPosts((posts) => {
     if (!posts && !Array.isArray(posts)) {
       return res.status(500).end();
     }
@@ -25,16 +27,18 @@ router.get('/posts', function (req, res, next) {
   });
 });
 
-router.post('/posts/new', function (req, res, next) {
+router.post("/posts/new", function (req, res, next) {
   let post = {};
   post.body = req.body.body;
   post.title = req.body.title;
   post.frequency = req.body.frequency;
   post.time = req.body.time;
-  if ([post.body, post.title, post.frequency, post.time].indexOf(undefined) !== -1) {
+  if (
+    [post.body, post.title, post.frequency, post.time].indexOf(undefined) !== -1
+  ) {
     return res.status(401);
   }
-  db.createNewScheduledPost(post, status => {
+  db.createNewScheduledPost(post, (status) => {
     Scheduler.refresh();
     if (!status) {
       return res.status(500).end();
@@ -43,17 +47,21 @@ router.post('/posts/new', function (req, res, next) {
   });
 });
 
-router.post('/posts/update', function (req, res, next) {
+router.post("/posts/update", function (req, res, next) {
   let post = {};
   post.body = req.body.body;
   post.title = req.body.title;
   post.frequency = req.body.frequency;
   post.time = req.body.time;
   const id = req.body.id;
-  if ([post.body, post.title, post.frequency, post.time, id].indexOf(undefined) !== -1) {
+  if (
+    [post.body, post.title, post.frequency, post.time, id].indexOf(
+      undefined
+    ) !== -1
+  ) {
     return res.status(401);
   }
-  db.modifyScheduledPostById(id, post, status => {
+  db.modifyScheduledPostById(id, post, (status) => {
     Scheduler.refresh();
     if (!status) {
       return res.status(500).end();
@@ -62,12 +70,12 @@ router.post('/posts/update', function (req, res, next) {
   });
 });
 
-router.delete('/posts/post', function (req, res, next) {
+router.delete("/posts/post", function (req, res, next) {
   let id = req.body.id;
   if (!id) {
     return res.status(401);
   }
-  db.deleteScheduledPostById(id, status => {
+  db.deleteScheduledPostById(id, (status) => {
     Scheduler.refresh();
     if (!status) {
       return res.status(500).end();

@@ -1,6 +1,6 @@
-const db = require('../controller/db');
-const path = require('path');
-db.init(path.join(__dirname, 'test.sqlite'), _ => {
+const db = require("../controller/db");
+const path = require("path");
+db.init(path.join(__dirname, "test.sqlite"), (_) => {
   // db.createNewScheduledPost({
   //   body: 'body',
   //   title: 'title',
@@ -12,7 +12,7 @@ db.init(path.join(__dirname, 'test.sqlite'), _ => {
   //     });
   //   }
   // });
-  db.getCreatedPostsByScheduledId(0, 10, posts => {
+  db.getCreatedPostsByScheduledId(0, 10, (posts) => {
     for (const post of posts) {
       console.log(post);
     }
